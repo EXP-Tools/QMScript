@@ -35,9 +35,13 @@ Call main()
 Sub main()
 	InitElemulator(EMULATOR_WIN_NAME)
 	
-    coords = FindAreaColor(0.53, 0.61, 0.68, 0.66, "C36734")
-    TracePrint "找到位置 X：" & coords(0)
-	TracePrint "找到位置 Y：" & coords(1)
+	// 开始小游戏时的【确认】按钮
+    coords = FindAreaColor(0.54, 0.62, 0.68, 0.66, "3366C3")
+    x = coords(0)
+    y = coords(1)
+    TracePrint "找到位置 X：" & x
+	TracePrint "找到位置 Y：" & y
+	Call RandomClick(x, y)
 End Sub
 
 
@@ -91,10 +95,10 @@ Function FindAreaColor(psx, psy, pex, pey, hexColor)
     rey = EMULATOR("Height") * pey// 相对于模拟器内部的区域终止 Y 坐标
     TracePrint "搜索区域的相对范围： (" & rsx & ", " & rsy & ") - (" & rex & ", " & rey & ")"
 
-    asx = EMULATOR("Left") + rsx        // 相对于屏幕的区域起始 X 坐标
-    asy = EMULATOR("Top") + rsy        	// 相对于屏幕的区域起始 Y 坐标
-    aex = EMULATOR("Left") + rex        // 相对于屏幕的区域终止 X 坐标
-    aey = EMULATOR("Top") + rey			// 相对于屏幕的区域终止 Y 坐标
+    asx = EMULATOR("Left") + rsx       // 相对于屏幕的区域起始 X 坐标
+    asy = EMULATOR("Top") + rsy        // 相对于屏幕的区域起始 Y 坐标
+    aex = EMULATOR("Left") + rex       // 相对于屏幕的区域终止 X 坐标
+    aey = EMULATOR("Top") + rey		   // 相对于屏幕的区域终止 Y 坐标
     TracePrint "搜索区域的绝对范围： (" & asx & ", " & asy & ") - (" & aex & ", " & aey & ")"
 
     mode = 0            // 检索模式，从左上到右下
