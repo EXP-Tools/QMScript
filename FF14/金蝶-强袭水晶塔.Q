@@ -36,6 +36,21 @@ Sub main()
     
     // 点击【确认】按钮开始小游戏
     Call clickStartConfirmBtn()
+
+
+    Do While True
+        Delay 5000  // 等待 5 秒进入游戏
+        Do While True
+            
+            Call clickCrystal()
+            Delay 1
+            
+        Loop
+
+        // 点击【再战】重开游戏
+    Loop
+
+    
 End Sub
 
 
@@ -62,7 +77,8 @@ Sub clickStartConfirmBtn()
     btnEX = 0.68    // 右下角 x 位置百分比
     btnEY = 0.66    // 右下角 y 位置百分比
     btnColor = "3366C3" // 按钮主颜色
-    coords = FindAreaColor(btnSX, btnEX, btnEX, btnEY, btnColor)
+    similarity = 0.8
+    coords = FindAreaColor(btnSX, btnEX, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
@@ -71,6 +87,38 @@ Sub clickStartConfirmBtn()
     Else
         TracePrint "未找到【确认】按钮坐标： (" & x & ", " & y & ")"
     End If
+End Sub
+
+
+Sub clickCrystal()
+
+    // 【判定水晶点击区域】在模拟器窗口内的相对位置的百分比
+    cSX = 0.6588    // 左上角 x 位置百分比
+    cSY = 0.7824    // 左上角 y 位置百分比
+    cEX = 0.9358    // 右下角 x 位置百分比
+    cEY = 0.8175    // 右下角 y 位置百分比
+
+    // 1494  1077
+    // 2175  1146
+
+    Dim CRYSTAL_COLORS(3)
+    // CRYSTAL_COLORS(0) = "B68539"  // 蓝水晶
+    CRYSTAL_COLORS(0) = "4194C1"  // 黄水晶
+    CRYSTAL_COLORS(1) = "B63989"  // 紫水晶
+    CRYSTAL_COLORS(2) = "2C52CE"  // 红水晶
+    similarity = 0.75
+
+    For i = 0 To UBound(CRYSTAL_COLORS)
+        coords = FindAreaColor(cSX, cSY, cEX, cEY, CRYSTAL_COLORS(i), similarity)
+        x = coords(0)
+        y = coords(1)
+
+        If x > 0 And y > 0 Then
+            TracePrint "找到水晶 [" & CRYSTAL_COLORS(i) & "]：(" & x & ", " & y & ")"
+            Call RandomClick(x, y)  // 点击水晶
+            Exit Sub   // 找到一个水晶后退出循环
+        End If
+    Next
 End Sub
 
 
@@ -124,25 +172,26 @@ End Function
 '   psy - 区域起始坐标：相对于模拟器内部高度的百分比
 '   pex - 区域终止坐标：相对于模拟器内部宽度的百分比
 '   pey - 区域终止坐标：相对于模拟器内部高度的百分比
+'   hexColor - 目标颜色
+'   similarity - 目标颜色相似度（0 完全不同，1 完全一样）
 ' 实现：
 '   1. 在目标坐标的基础上，随机生成 -10 到 10 的偏移量。
 '   2. 计算随机点击位置。
 '   3. 移动鼠标到随机位置并执行左键点击。
-Function FindAreaColor(psx, psy, pex, pey, hexColor)
+Function FindAreaColor(psx, psy, pex, pey, hexColor, similarity)
     rsx = EMULATOR("Width") * psx       // 相对于模拟器内部的区域起始 X 坐标
     rsy = EMULATOR("Height") * psy      // 相对于模拟器内部的区域起始 Y 坐标
     rex = EMULATOR("Width") * pex       // 相对于模拟器内部的区域终止 X 坐标
     rey = EMULATOR("Height") * pey      // 相对于模拟器内部的区域终止 Y 坐标
-    TracePrint "搜索区域的相对范围： (" & rsx & ", " & rsy & ") - (" & rex & ", " & rey & ")"
+    // TracePrint "搜索区域的相对范围： (" & rsx & ", " & rsy & ") - (" & rex & ", " & rey & ")"
 
     asx = EMULATOR("Left") + rsx        // 相对于屏幕的区域起始 X 坐标
     asy = EMULATOR("Top") + rsy         // 相对于屏幕的区域起始 Y 坐标
     aex = EMULATOR("Left") + rex        // 相对于屏幕的区域终止 X 坐标
     aey = EMULATOR("Top") + rey         // 相对于屏幕的区域终止 Y 坐标
-    TracePrint "搜索区域的绝对范围： (" & asx & ", " & asy & ") - (" & aex & ", " & aey & ")"
+    // TracePrint "搜索区域的绝对范围： (" & asx & ", " & asy & ") - (" & aex & ", " & aey & ")"
 
     mode = 0            // 检索模式，从左上到右下
-    similarity = 0.8    // 匹配颜色的相似度
     FindColorEx asx, asy, aex, aey, hexColor, mode, similarity, rstX, rstY
 
     Dim coords(2)
