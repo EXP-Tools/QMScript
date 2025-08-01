@@ -125,12 +125,11 @@ Function clickCrystal()
     cEX = 0.9358    // 右下角 x 位置百分比
     cEY = 0.8175    // 右下角 y 位置百分比
 
-    Dim CRYSTAL_COLORS(3)
+    Dim CRYSTAL_COLORS(4)
     CRYSTAL_COLORS(0) = "4194C1"  // 黄水晶
     CRYSTAL_COLORS(1) = "B63989"  // 紫水晶
     CRYSTAL_COLORS(2) = "2C52CE"  // 红水晶
-    // 跳过最初的 2 个蓝水晶，且每轮循环可以减少匹配一种颜色，反而可以提高其他 3 种颜色的匹配速度
-    // CRYSTAL_COLORS(4) = "B68539"  // 蓝水晶
+    CRYSTAL_COLORS(3) = "B68539"  // 蓝水晶
     similarity = 0.75   // 测试得到最佳的颜色相似度
 
     For i = 0 To UBound(CRYSTAL_COLORS)
@@ -140,7 +139,11 @@ Function clickCrystal()
 
         If x > 0 And y > 0 Then
             TracePrint "找到水晶 [" & CRYSTAL_COLORS(i) & "]：(" & x & ", " & y & ")"
-            Call RandomClick(x, y)  // 点击水晶
+            
+             // 点击水晶，水晶本身就是随机出现的，这里无需再模拟随机点击，减少点击失误次数
+            // Call RandomClick(x, y) 
+            MoveTo x, y
+    		LeftClick 1
             Exit Function   // 找到一个水晶后退出循环
         End If
     Next
