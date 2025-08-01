@@ -139,11 +139,7 @@ Function clickCrystal()
 
         If x > 0 And y > 0 Then
             TracePrint "找到水晶 [" & CRYSTAL_COLORS(i) & "]：(" & x & ", " & y & ")"
-            
-             // 点击水晶，水晶本身就是随机出现的，这里无需再模拟随机点击，减少点击失误次数
-            // Call RandomClick(x, y) 
-            MoveTo x, y
-    		LeftClick 1
+            Call RandomClick(x, y) 
             Exit Function   // 找到一个水晶后退出循环
         End If
     Next
@@ -272,14 +268,14 @@ End Function
 '   x - 鼠标目标位置的 X 坐标
 '   y - 鼠标目标位置的 Y 坐标
 ' 实现：
-'   1. 在目标坐标的基础上，随机生成 -10 到 10 的偏移量。
+'   1. 在目标坐标的基础上，随机生成 -5 到 5 的偏移量。
 '   2. 计算随机点击位置。
 '   3. 移动鼠标到随机位置并执行左键点击。
 Function RandomClick(x, y)
     // 定义偏移范围
     Dim offsetX, offsetY
-    offsetX = Int(Rnd() * 21) - 10  // 随机生成 -10 到 10 的偏移量
-    offsetY = Int(Rnd() * 21) - 10  // 随机生成 -10 到 10 的偏移量
+    offsetX = Int(Rnd() * 11) - 5  // 随机生成 -5 到 5 的偏移量
+    offsetY = Int(Rnd() * 11) - 5  // 随机生成 -5 到 5 的偏移量
 
     // 计算随机点击位置
     Dim clickX, clickY
