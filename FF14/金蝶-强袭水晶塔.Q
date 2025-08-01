@@ -30,28 +30,38 @@ EMULATOR_WIN_NAME = "MuMu模拟器12"      // 模拟器窗口名字
 Call main()
 
 
-Sub main()
+Function main()
     // 初始化模拟器窗体信息（位置与大小）
     InitElemulator(EMULATOR_WIN_NAME)
     
     // 点击【确认】按钮开始小游戏
     Call clickStartConfirmBtn()
 
-
     Do While True
         Delay 5000  // 等待 5 秒进入游戏
+
+        // 开始新的一轮游戏
+        cnt = 1
         Do While True
             
+            // 在水晶判断区域，无时无刻检测是否有一种颜色的水晶到达然后点击
+            // 因为水晶速度较快可能会失误，但有失误反而更像真人在玩游戏
             Call clickCrystal()
             Delay 1
-            
+
+            // cnt 用于读秒，大概在 230 左右一轮游戏就结束，
+            // 此时再判断指定区域的【再战】按钮是否出现，可以减少检索次数提高游戏效率
+			cnt = cnt + 1
+			If cnt >= 230 Then
+        		If clickRetry() Then
+        			TracePrint "完成一轮游戏"
+                	Exit Do  // 开始新的游戏循环
+    			End If
+    		End If
         Loop
-
-        // 点击【再战】重开游戏
     Loop
-
     
-End Sub
+End Function
 
 
 ' 函数名称：clickStartConfirmBtn
@@ -66,7 +76,7 @@ End Sub
 '   - 以后使用时模拟器可以在屏幕任意位置，代码会计算相对坐标。
 ' 返回值：
 '   无返回值
-Sub clickStartConfirmBtn()
+Function clickStartConfirmBtn()
 
     // 【确认】按钮坐标在模拟器窗口内的相对位置的百分比
     // 譬如模拟器宽高为 2560 x 1440
@@ -87,10 +97,10 @@ Sub clickStartConfirmBtn()
     Else
         TracePrint "未找到【确认】按钮坐标： (" & x & ", " & y & ")"
     End If
-End Sub
+End Function
 
 
-Sub clickCrystal()
+Function clickCrystal()
 
     // 【判定水晶点击区域】在模拟器窗口内的相对位置的百分比
     cSX = 0.6588    // 左上角 x 位置百分比
@@ -98,15 +108,13 @@ Sub clickCrystal()
     cEX = 0.9358    // 右下角 x 位置百分比
     cEY = 0.8175    // 右下角 y 位置百分比
 
-    // 1494  1077
-    // 2175  1146
-
     Dim CRYSTAL_COLORS(3)
-    // CRYSTAL_COLORS(0) = "B68539"  // 蓝水晶
     CRYSTAL_COLORS(0) = "4194C1"  // 黄水晶
     CRYSTAL_COLORS(1) = "B63989"  // 紫水晶
     CRYSTAL_COLORS(2) = "2C52CE"  // 红水晶
-    similarity = 0.75
+    // 跳过最初的 2 个蓝水晶，且每轮循环可以减少匹配一种颜色，反而可以提高其他 3 种颜色的匹配速度
+    // CRYSTAL_COLORS(4) = "B68539"  // 蓝水晶
+    similarity = 0.75   // 测试得到最佳的颜色相似度
 
     For i = 0 To UBound(CRYSTAL_COLORS)
         coords = FindAreaColor(cSX, cSY, cEX, cEY, CRYSTAL_COLORS(i), similarity)
@@ -116,10 +124,34 @@ Sub clickCrystal()
         If x > 0 And y > 0 Then
             TracePrint "找到水晶 [" & CRYSTAL_COLORS(i) & "]：(" & x & ", " & y & ")"
             Call RandomClick(x, y)  // 点击水晶
-            Exit Sub   // 找到一个水晶后退出循环
+            Exit Function   // 找到一个水晶后退出循环
         End If
     Next
-End Sub
+End Function
+
+
+Function clickRetry()
+    isRetry = False
+
+    // 【再战】按钮坐标在模拟器窗口内的相对位置的百分比
+    btnSX = 0.8398      // 左上角 x 位置百分比
+    btnSY = 0.9003      // 左上角 y 位置百分比
+    btnEX = 0.9227      // 右下角 x 位置百分比
+    btnEY = 0.9403      // 右下角 y 位置百分比
+    btnColor = "649DAE" // 按钮主颜色
+    similarity = 0.8
+    coords = FindAreaColor(btnSX, btnEX, btnEX, btnEY, btnColor, similarity)
+    x = coords(0)
+    y = coords(1)
+    If x > 0 And y > 0 Then
+        TracePrint "找到【再战】按钮坐标： (" & x & ", " & y & ")"
+        Call RandomClick(x, y)
+        isRetry = True
+    End If
+
+    clickRetry = isRetry
+End Function
+
 
 
 ' 函数名称：InitElemulator
