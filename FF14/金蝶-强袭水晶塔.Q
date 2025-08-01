@@ -35,13 +35,8 @@ Call main()
 Sub main()
     InitElemulator(EMULATOR_WIN_NAME)
     
-    // 开始小游戏时的【确认】按钮
-    coords = FindAreaColor(0.54, 0.62, 0.68, 0.66, "3366C3")
-    x = coords(0)
-    y = coords(1)
-    TracePrint "找到位置 X：" & x
-    TracePrint "找到位置 Y：" & y
-    Call RandomClick(x, y)
+    // 点击【确认】按钮开始小游戏
+    Call clickStartConfirmBtn()
 End Sub
 
 
@@ -68,12 +63,15 @@ Sub clickStartConfirmBtn()
     btnEX = 0.68    // 右下角 x 位置百分比
     btnEY = 0.66    // 右下角 y 位置百分比
     btnColor = "3366C3" // 按钮主颜色
-    coords = FindAreaColor(0.54, 0.62, 0.68, 0.66, "3366C3")
+    coords = FindAreaColor(btnSX, btnEX, btnEX, btnEY, btnColor)
     x = coords(0)
     y = coords(1)
-    TracePrint "找到位置 X：" & x
-    TracePrint "找到位置 Y：" & y
-    Call RandomClick(x, y)
+    If x > 0 And y > 0 Then
+        TracePrint "找到【确认】按钮坐标： (" & x & ", " & Y & ")"
+        Call RandomClick(x, y)
+    Else
+        TracePrint "未找到【确认】按钮坐标： (" & x & ", " & Y & ")"
+    End If
 End Sub
 
 
@@ -179,7 +177,4 @@ Function RandomClick(x, y)
     MoveTo clickX, clickY
     LeftClick 1
 End Function
-
-
-
 
