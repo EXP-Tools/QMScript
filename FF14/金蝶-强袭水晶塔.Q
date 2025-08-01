@@ -23,16 +23,15 @@ SetupOCXFile=
 [Comment]
 
 [Script]
-Dim EMULATOR            // 定义全局模拟器对象
-EMULATOR_WIN_NAME = "MuMu模拟器12"    // 模拟器窗口名字
-EMULATOR_WIN_W = 0      // 模拟器窗口分辨率 宽
-EMULATOR_WIN_H = 0      // 模拟器窗口分辨率 高
+Dim EMULATOR                            // 定义全局模拟器对象
+EMULATOR_WIN_NAME = "MuMu模拟器12"      // 模拟器窗口名字
 
-
+// 启动入口
 Call main()
 
 
 Sub main()
+    // 初始化模拟器窗体信息（位置与大小）
     InitElemulator(EMULATOR_WIN_NAME)
     
     // 点击【确认】按钮开始小游戏
@@ -67,10 +66,10 @@ Sub clickStartConfirmBtn()
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-        TracePrint "找到【确认】按钮坐标： (" & x & ", " & Y & ")"
+        TracePrint "找到【确认】按钮坐标： (" & x & ", " & y & ")"
         Call RandomClick(x, y)
     Else
-        TracePrint "未找到【确认】按钮坐标： (" & x & ", " & Y & ")"
+        TracePrint "未找到【确认】按钮坐标： (" & x & ", " & y & ")"
     End If
 End Sub
 
@@ -133,22 +132,22 @@ Function FindAreaColor(psx, psy, pex, pey, hexColor)
     rsx = EMULATOR("Width") * psx       // 相对于模拟器内部的区域起始 X 坐标
     rsy = EMULATOR("Height") * psy      // 相对于模拟器内部的区域起始 Y 坐标
     rex = EMULATOR("Width") * pex       // 相对于模拟器内部的区域终止 X 坐标
-    rey = EMULATOR("Height") * pey// 相对于模拟器内部的区域终止 Y 坐标
+    rey = EMULATOR("Height") * pey      // 相对于模拟器内部的区域终止 Y 坐标
     TracePrint "搜索区域的相对范围： (" & rsx & ", " & rsy & ") - (" & rex & ", " & rey & ")"
 
-    asx = EMULATOR("Left") + rsx       // 相对于屏幕的区域起始 X 坐标
-    asy = EMULATOR("Top") + rsy        // 相对于屏幕的区域起始 Y 坐标
-    aex = EMULATOR("Left") + rex       // 相对于屏幕的区域终止 X 坐标
-    aey = EMULATOR("Top") + rey           // 相对于屏幕的区域终止 Y 坐标
+    asx = EMULATOR("Left") + rsx        // 相对于屏幕的区域起始 X 坐标
+    asy = EMULATOR("Top") + rsy         // 相对于屏幕的区域起始 Y 坐标
+    aex = EMULATOR("Left") + rex        // 相对于屏幕的区域终止 X 坐标
+    aey = EMULATOR("Top") + rey         // 相对于屏幕的区域终止 Y 坐标
     TracePrint "搜索区域的绝对范围： (" & asx & ", " & asy & ") - (" & aex & ", " & aey & ")"
 
     mode = 0            // 检索模式，从左上到右下
     similarity = 0.8    // 匹配颜色的相似度
-    FindColorEx asx, asy, aex, aey, hexColor, mode, similarity, intX, intY
+    FindColorEx asx, asy, aex, aey, hexColor, mode, similarity, rstX, rstY
 
     Dim coords(2)
-    coords(0) = intX
-    coords(1) = intY
+    coords(0) = rstX
+    coords(1) = rstY
     FindAreaColor = coords
 End Function
 
