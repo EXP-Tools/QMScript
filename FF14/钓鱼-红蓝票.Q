@@ -58,8 +58,17 @@ Function main()
 End Function
 
 
-
-
+' 函数名称：clickThrowingPoleBtn
+' 功能：点击【抛竿】按钮
+' 实现：
+'   1. 定义【抛竿】按钮区域在模拟器窗口内的相对位置百分比。
+'   2. 检测目标区域内是否出现指定颜色的按钮。
+'   3. 如果检测到按钮，模拟鼠标点击操作。
+' 注意事项：
+'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
+'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
+' 返回值：
+'   无返回值
 Function clickThrowingPoleBtn()
 
     Do While True
@@ -105,7 +114,17 @@ Function clickThrowingPoleBtn()
 End Function
 
 
-
+' 函数名称：clickConfirmCollectionBtn
+' 功能：点击【确认收集】按钮
+' 实现：
+'   1. 定义【确认收集】按钮区域在模拟器窗口内的相对位置百分比。
+'   2. 检测目标区域内是否出现指定颜色的按钮。
+'   3. 如果检测到按钮，模拟鼠标点击操作。
+' 注意事项：
+'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
+'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
+' 返回值：
+'   无返回值
 Function clickConfirmCollectionBtn()
 
     // 收藏品【确认】按钮坐标在模拟器窗口内的相对位置的百分比
@@ -133,7 +152,17 @@ Function clickConfirmCollectionBtn()
 End Function
 
 
-
+' 函数名称：clickSubmitCollectionBtn
+' 功能：点击【提交收集】按钮
+' 实现：
+'   1. 定义【提交收集】按钮区域在模拟器窗口内的相对位置百分比。
+'   2. 检测目标区域内是否出现指定颜色的按钮。
+'   3. 如果检测到按钮，模拟鼠标点击操作。
+' 注意事项：
+'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
+'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
+' 返回值：
+'   无返回值
 Function clickSubmitCollectionBtn()
 
     // 收藏品【入口】按钮坐标在模拟器窗口内的相对位置的百分比
@@ -171,7 +200,17 @@ Function clickSubmitCollectionBtn()
 End Function
 
 
-
+' 函数名称：clickLiftPoleBtn
+' 功能：点击【提竿】按钮
+' 实现：
+'   1. 定义【提竿】按钮区域在模拟器窗口内的相对位置百分比。
+'   2. 检测目标区域内是否出现指定颜色的按钮。
+'   3. 如果检测到按钮，模拟鼠标点击操作。
+' 注意事项：
+'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
+'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
+' 返回值：
+'   无返回值
 Function clickLiftPoleBtn()
 
     Do While True
@@ -217,6 +256,19 @@ Function clickLiftPoleBtn()
 End Function
 
 
+' 函数名称：judgeThrowingPoleStatus
+' 功能：判断是否处于【可抛竿】状态
+' 实现：
+'   1. 定义【以小钓大（禁用）】按钮区域在模拟器窗口内的相对位置百分比。
+'   2. 检测目标区域内是否出现指定颜色的按钮。
+'   3. 如果检测到按钮，返回 True；否则返回 False。
+' 注意事项：
+'   - 按钮颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
+'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
+' 返回值：
+'   布尔值：
+'     - True：检测到【可抛竿】状态。
+'     - False：未检测到【可抛竿】状态。
 Function judgeThrowingPoleStatus()
     isThrowing = False
 
