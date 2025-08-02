@@ -9,7 +9,7 @@ StopHotkeyMod=0
 RunOnce=1
 EnableWindow=
 MacroID=8192e189-f6b0-4af1-b739-55f971bdbd38
-Description=钓鱼
+Description=钓鱼-红蓝票
 Enable=1
 AutoRun=0
 [Repeat]
@@ -23,7 +23,11 @@ SetupOCXFile=
 [Comment]
 
 [Script]
-// QQ14 自动钓鱼脚本（支持红票）
+// QQ14 自动钓鱼脚本（支持红蓝票，不支持以小钓大）
+// 需要进入钓鱼状态（看到鱼饵箱）后、未抛竿时使用
+// 由于是无限循环，需要购买足够的鱼饵
+// 开始运行脚本： F10
+// 终止脚本运行： F12
 // 虽然脚本对任意规格做了同比例自适应，但是可能会出现区域偏差的情况
 // 推荐 MuMu模拟器窗口大小为 2560 x 1440 (开发是在此规格下测试的)
 
