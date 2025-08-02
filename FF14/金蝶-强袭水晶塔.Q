@@ -203,6 +203,8 @@ Function InitElemulator(win_name)
     TracePrint "模拟器窗口名字：" & win_name
     
     hwnd = Plugin.Window.Find(0, win_name)
+    Call Plugin.Window.Active(hwnd)     // 激活模拟器窗口
+
     win_size = Plugin.Window.GetWindowRect(hwnd)
     TracePrint "模拟器窗口边框尺寸：" & win_size
     

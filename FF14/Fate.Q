@@ -8,8 +8,8 @@ StopHotkey=123
 StopHotkeyMod=0
 RunOnce=1
 EnableWindow=
-MacroID=4573910e-78d7-41fd-8f07-04664627f8e0
-Description=钓鱼-红蓝票
+MacroID=8e1162a0-4b10-4c72-9f41-389e269403f0
+Description=Fate
 Enable=1
 AutoRun=0
 [Repeat]
@@ -23,9 +23,7 @@ SetupOCXFile=
 [Comment]
 
 [Script]
-// QQ14 自动钓鱼脚本（支持红蓝票，不支持以小钓大）
-// 需要进入钓鱼状态（看到鱼饵箱）后、未抛竿时使用
-// 由于是无限循环，需要购买足够的鱼饵
+// QQ14 自动 Fate 脚本（建议使用诗人，在北萨开脚本）
 // 开始运行脚本： F10
 // 终止脚本运行： F12
 // 虽然脚本对任意规格做了同比例自适应，但是可能会出现区域偏差的情况
@@ -34,9 +32,6 @@ SetupOCXFile=
 Dim EMULATOR                            // 定义全局模拟器对象
 EMULATOR_WIN_NAME = "MuMu模拟器12"// 模拟器窗口名字
 
-// 暂不支持自动提交，需要退出钓鱼状态，而且有红票/蓝票溢出风险
-// 所以长时间钓鱼需要确保背包空间足够
-AUTO_SUBMIT = False   // 自动提交收藏品
 
 
 // 启动入口
@@ -47,13 +42,13 @@ Function main()
     // 初始化模拟器窗体信息（位置与大小）
     InitElemulator(EMULATOR_WIN_NAME)
     
-    Do While True
-        // 抛竿
-        Call clickThrowingPoleBtn()
+    //Do While True
+		KeyPress "M", 1
 
-        // 等待上钩 并 起杆（暂不处理以小钓大，蓝票/红票不需要）
-        Call clickLiftPoleBtn()
-    Loop
+        // 打开地图随机选择目标 Fate 自动寻路
+        // 到达目的地开启自动战斗
+        // 战斗结束循环
+    //Loop
     
 End Function
 
