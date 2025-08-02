@@ -8,7 +8,7 @@ StopHotkey=123
 StopHotkeyMod=0
 RunOnce=1
 EnableWindow=
-MacroID=8e1162a0-4b10-4c72-9f41-389e269403f0
+MacroID=453c892e-ee11-4f39-a742-7439e38ff375
 Description=Fate
 Enable=1
 AutoRun=0
@@ -46,18 +46,44 @@ Function main()
     // 初始化模拟器窗体信息（位置与大小）
     InitElemulator(EMULATOR_WIN_NAME)
     
-    //Do While True
+    Do While True
 
-        // 利用模拟器快捷键打开地图
-		KeyPress "M", 1
-        Delay 2000
+        // 打开地图
+		Call openMap()
 
-        // 从左上到右下检索第一个 Fate 位置
+        // 检索 Fate 并自动寻路
+        Call searchFate()
+        
+        // 检测是否到达目的地
+        Call joinToFate()
+
+        // 开启自动战斗
+        Call autoFight()
+
+    Loop
+    
+End Function
+
+
+// 利用模拟器快捷键打开地图
+Function openMap()
+    KeyPress "M", 1
+    Delay 2000
+End Function
+
+
+
+Function searchFate()
+    Do While True
+        TracePrint "正在检索【Fate】..."
+        Delay 1000
+
+        // 从地图的左上到右下检索第一个 Fate 位置
         mapSX = 0.1018    // 左上角 x 位置比例
         mapSY = 0.1221    // 左上角 y 位置比例
         mapEX = 0.9412    // 右下角 x 位置比例
         mapEY = 0.9864    // 右下角 y 位置比例
-        fateColor = "C26BAB" // 按钮主颜色
+        fateColor = "C26BAB" // Fate 主颜色
         similarity = 0.8
         coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, similarity)
         x = coords(0)
@@ -67,260 +93,166 @@ Function main()
             Call AccurateClick(x, y)
             Delay 1000
 
-            // 【自动寻路】按钮
-            // 2560 最远是 400px   offsetX = EMULATOR("Width") * 0.1741
-            // 1440 大概是 200px   offsetY = EMULATOR("Height") * 0.1508
-            // 其他分辨率同比例换算
-            // 左上角  x, y-offsetY
-            // 右下角  x + offsetX, y
-            // 85A5AD  0.9
-
-        End If
-        
-        
-
-
-        // 打开地图随机选择目标 Fate 自动寻路
-        // 到达目的地开启自动战斗
-        // 战斗结束循环
-    //Loop
-    
-End Function
-
-
-' 函数名称：clickThrowingPoleBtn
-' 功能：点击【抛竿】按钮
-' 实现：
-'   1. 定义【抛竿】按钮区域在模拟器窗口内的相对位置比例。
-'   2. 检测目标区域内是否出现指定颜色的按钮。
-'   3. 如果检测到按钮，模拟鼠标点击操作。
-' 注意事项：
-'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
-'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
-' 返回值：
-'   无返回值
-Function clickThrowingPoleBtn()
-
-    Do While True
-        Delay 1000  // 循环等待回到抛竿状态
-
-        // 【以小钓大（禁用）】按钮坐标在模拟器窗口内的相对位置的百分比
-        // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
-        //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
-        //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
-        btnSX = 0.8524    // 左上角 x 位置比例
-        btnSY = 0.5701    // 左上角 y 位置比例
-        btnEX = 0.8881    // 右下角 x 位置比例
-        btnEY = 0.6312    // 右下角 y 位置比例
-        btnColor = "2A3851" // 按钮主颜色
-        similarity = 0.8
-        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-        x = coords(0)
-        y = coords(1)
-        If x > 0 And y > 0 Then
-            TracePrint "当前处于【可抛竿】状态"
-
-            // 【抛竿】按钮坐标在模拟器窗口内的相对位置的百分比
-            btnSX = 0.8454    // 左上角 x 位置比例
-            btnSY = 0.7435    // 左上角 y 位置比例
-            btnEX = 0.8972    // 右下角 x 位置比例
-            btnEY = 0.8250    // 右下角 y 位置比例
-            btnColor = "B7D0E1" // 按钮主颜色
-            similarity = 0.8
-            coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-            x = coords(0)
-            y = coords(1)
-            If x > 0 And y > 0 Then
-                TracePrint "找到【抛竿】按钮坐标： (" & x & ", " & y & ")"
-                Call RandomClick(x, y)
-                Dealy 1000
-                Exit Do  // 进入提竿前的等待状态
+            isRuning = autoRunToFate(x, y)
+            If isRuning Then
+                Exit Do  // 进入自动寻路状态
             End If
         End If
-
-        // 【确认】收藏品
-        Call clickConfirmCollectionBtn()
     Loop
 End Function
 
 
-' 函数名称：clickConfirmCollectionBtn
-' 功能：点击【确认收集】按钮
-' 实现：
-'   1. 定义【确认收集】按钮区域在模拟器窗口内的相对位置比例。
-'   2. 检测目标区域内是否出现指定颜色的按钮。
-'   3. 如果检测到按钮，模拟鼠标点击操作。
-' 注意事项：
-'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
-'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
-' 返回值：
-'   无返回值
-Function clickConfirmCollectionBtn()
-
-    // 收藏品【确认】按钮坐标在模拟器窗口内的相对位置的百分比
-    btnSX = 0.6033    // 左上角 x 位置比例
-    btnSY = 0.7292    // 左上角 y 位置比例
-    btnEX = 0.6678    // 右下角 x 位置比例
-    btnEY = 0.6312    // 右下角 y 位置比例
-    btnColor = "659EAF" // 按钮主颜色
+Function autoRunToFate(fateX, fateY)
+    isRuning = False
+    // 【自动寻路】按钮
+    offsetX = EMULATOR("Width") * 0.1741  // 2560 最远是 400px，400 对应位置比例是 0.1741
+    offsetY = EMULATOR("Height") * 0.1508 // 1440 大概是 200px，200 对应位置比例是 0.1508
+    btnSX = fateX               // 自动寻路左上角 x 位置比例
+    btnSY = fateY - offsetY     // 自动寻路左上角 y 位置比例
+    btnEX = fateX + offsetX     // 自动寻路右下角 x 位置比例
+    btnEY = fateY               // 自动寻路右下角 y 位置比例
+    runColor = "85A5AD"
+    mode = 0                    // 检索模式，从左上到右下
     similarity = 0.8
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-    x = coords(0)
-    y = coords(1)
+    FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
     If x > 0 And y > 0 Then
-        TracePrint "找到收藏品【确认】按钮坐标： (" & x & ", " & y & ")"
-        Call RandomClick(x, y)
+        TracePrint "开始【自动寻路】 ..."
+        Call AccurateClick(x, y)
         Delay 1000
-
-        // 马上提交收藏品，避免占用背包位置
-        // 但是挂机时间太长会有红票/蓝票溢出风险，请自行评估是否开启
-        If AUTO_SUBMIT Then
-            Call clickSubmitCollectionBtn()
-        End If
+        isRuning = True
+    Else
+        TracePrint "未找到【自动寻路】按钮！"
     End If
-
+    autoRunToFate = isRuning
 End Function
 
 
-' 函数名称：clickSubmitCollectionBtn
-' 功能：点击【提交收集】按钮
-' 实现：
-'   1. 定义【提交收集】按钮区域在模拟器窗口内的相对位置比例。
-'   2. 检测目标区域内是否出现指定颜色的按钮。
-'   3. 如果检测到按钮，模拟鼠标点击操作。
-' 注意事项：
-'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
-'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
-' 返回值：
-'   无返回值
-Function clickSubmitCollectionBtn()
 
-    // 收藏品【入口】按钮坐标在模拟器窗口内的相对位置的百分比
-    btnSX = 0.8702    // 左上角 x 位置比例
-    btnSY = 0.4291    // 左上角 y 位置比例
-    btnEX = 0.8985    // 右下角 x 位置比例
-    btnEY = 0.4698    // 右下角 y 位置比例
-    btnColor = "D0F2FD" // 按钮主颜色
-    similarity = 0.8
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-    x = coords(0)
-    y = coords(1)
-    If x > 0 And y > 0 Then
-        TracePrint "找到收藏品【入口】按钮坐标： (" & x & ", " & y & ")"
-        Call RandomClick(x, y)
-        Delay 1000
-
-
-        // 收藏品【提交】按钮坐标在模拟器窗口内的相对位置的百分比
-        btnSX = 0.8254    // 左上角 x 位置比例
-        btnSY = 0.8340    // 左上角 y 位置比例
-        btnEX = 0.9046    // 右下角 x 位置比例
-        btnEY = 0.8778    // 右下角 y 位置比例
-        btnColor = "659FB0" // 按钮主颜色
-        similarity = 0.8
-        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-        x = coords(0)
-        y = coords(1)
-        If x > 0 And y > 0 Then
-            TracePrint "找到收藏品【提交】按钮坐标： (" & x & ", " & y & ")"
-            Call RandomClick(x, y)
-        End If
-    End If
-
-End Function
-
-
-' 函数名称：clickLiftPoleBtn
-' 功能：点击【提竿】按钮
-' 实现：
-'   1. 定义【提竿】按钮区域在模拟器窗口内的相对位置比例。
-'   2. 检测目标区域内是否出现指定颜色的按钮。
-'   3. 如果检测到按钮，模拟鼠标点击操作。
-' 注意事项：
-'   - 按钮的颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
-'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
-' 返回值：
-'   无返回值
-Function clickLiftPoleBtn()
-
+Function joinToFate()
     Do While True
-        Delay 1000  // 循环等待上钩
+        TracePrint "正在检索【Fate】..."
+        Delay 1000
 
-        // 【咬钩】提示坐标在模拟器窗口内的相对位置的百分比
-        btnSX = 0.6686    // 左上角 x 位置比例
-        btnSY = 0.4839    // 左上角 y 位置比例
-        btnEX = 0.6991    // 右下角 x 位置比例
-        btnEY = 0.5103    // 右下角 y 位置比例
-        btnColor = "5599BE" // 按钮主颜色
+        // 【参加】Fate 按钮
+        btnSX = 0.7283      // 左上角 x 位置比例
+        btnSY = 0.2149      // 左上角 y 位置比例
+        btnEX = 0.8123      // 右下角 x 位置比例
+        btnEY = 0.2549      // 右下角 y 位置比例
+        btnColor = "4DA1C4"
         similarity = 0.8
         coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
         x = coords(0)
         y = coords(1)
         If x > 0 And y > 0 Then
-            TracePrint "当前处于【咬钩】状态"
-
-            // 【提竿】按钮坐标在模拟器窗口内的相对位置的百分比
-            btnSX = 0.8454    // 左上角 x 位置比例
-            btnSY = 0.7435    // 左上角 y 位置比例
-            btnEX = 0.8972    // 右下角 x 位置比例
-            btnEY = 0.8250    // 右下角 y 位置比例
-            btnColor = "B7D0E1" // 按钮主颜色
-            similarity = 0.8
-            coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-            x = coords(0)
-            y = coords(1)
-            If x > 0 And y > 0 Then
-                TracePrint "找到【提竿】按钮坐标： (" & x & ", " & y & ")"
-                Call RandomClick(x, y)
-                Delay 1000
-                Exit Do  // 退回抛竿状态
-            End If
-        End If
-
-        // 脱竿了
-        If judgeThrowingPoleStatus() Then
-            Exit Do  // 退回抛竿状态
+            TracePrint "进入【Fate】范围，参加战斗！"
+            Call AccurateClick(x, y)
+            Delay 1000
+            Exit Do  // 进入战斗状态
         End If
     Loop
-    
 End Function
 
 
-' 函数名称：judgeThrowingPoleStatus
-' 功能：判断是否处于【可抛竿】状态
-' 实现：
-'   1. 定义【以小钓大（禁用）】按钮区域在模拟器窗口内的相对位置比例。
-'   2. 检测目标区域内是否出现指定颜色的按钮。
-'   3. 如果检测到按钮，返回 True；否则返回 False。
-' 注意事项：
-'   - 按钮颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
-'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
-' 返回值：
-'   布尔值：
-'     - True：检测到【可抛竿】状态。
-'     - False：未检测到【可抛竿】状态。
-Function judgeThrowingPoleStatus()
-    isThrowing = False
+Function autoFight()
+    // 自动平 A
+    MiddleClick 1
 
-    // 【以小钓大（禁用）】按钮坐标在模拟器窗口内的相对位置的百分比
-    // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
-    //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
-    //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
-    btnSX = 0.8524    // 左上角 x 位置比例
-    btnSY = 0.5701    // 左上角 y 位置比例
-    btnEX = 0.8881    // 右下角 x 位置比例
-    btnEY = 0.6312    // 右下角 y 位置比例
-    btnColor = "2A3851" // 按钮主颜色
+    Do While True
+        TracePrint "正在释放技能"
+        Delay 1000
+
+        KeyPress "R", 1
+        Delay 1000
+
+        KeyPress "1", 1
+        Delay 1000
+        KeyPress "Z", 1
+        Delay 1000
+
+        KeyPress "2", 1
+        Delay 1000
+        KeyPress "Z", 1
+        Delay 1000
+
+        KeyPress "3", 1
+        Delay 1000
+        KeyPress "Z", 1
+        Delay 1000
+
+        KeyPress "4", 1
+        Delay 1000
+        KeyPress "Z", 1
+        Delay 1000
+
+        KeyPress "5", 1
+        Delay 1000
+        KeyPress "Z", 1
+        Delay 1000
+
+        if finishFate() Then
+            Exit
+        End If
+
+        if finishFate() Then
+            Exit
+        End If
+    Loop
+
+
+    // 关闭自动平 A
+    MiddleClick 1
+End Function
+
+
+
+Function finishFate()
+    isFin = False
+
+    // 完成 Fate【退出】按钮
+    btnSX = 0.6090      // 左上角 x 位置比例
+    btnSY = 0.8627      // 左上角 y 位置比例
+    btnEX = 0.7074      // 右下角 x 位置比例
+    btnEY = 0.9057      // 右下角 y 位置比例
+    btnColor = "659EB0"
     similarity = 0.8
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-        TracePrint "当前处于【可抛竿】状态"
-        isThrowing = True
+        TracePrint "【完成】Fate，退出危命任务 ..."
+        Call RandomClick(x, y)
+        Delay 5000
     End If
-    judgeThrowingPoleStatus = isThrowing
+
+    finishFate = isFin
 End Function
+
+
+Function deadBack()
+    isDead = False
+
+    // 死亡回归【确认】按钮
+    btnSX = 0.5816      // 左上角 x 位置比例
+    btnSY = 0.6523      // 左上角 y 位置比例
+    btnEX = 0.6774      // 右下角 x 位置比例
+    btnEY = 0.8975      // 右下角 y 位置比例
+    btnColor = "66A1B2"
+    similarity = 0.8
+    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+    x = coords(0)
+    y = coords(1)
+    If x > 0 And y > 0 Then
+        TracePrint "战斗死亡【确认】，返回水晶 ..."
+        Call RandomClick(x, y)
+        Delay 5000
+    End If
+
+    finishFate = isFin
+End Function
+
+
+
+
 
 
 
