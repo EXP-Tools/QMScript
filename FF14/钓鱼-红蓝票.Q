@@ -59,6 +59,7 @@ End Function
 
 
 
+
 Function clickThrowingPoleBtn()
 
     Do While True
@@ -78,7 +79,7 @@ Function clickThrowingPoleBtn()
         x = coords(0)
         y = coords(1)
         If x > 0 And y > 0 Then
-            TracePrint "当前处于【抛竿】状态"
+            TracePrint "当前处于【可抛竿】状态"
 
             // 【抛竿】按钮坐标在模拟器窗口内的相对位置的百分比
             btnSX = 0.8454    // 左上角 x 位置百分比
@@ -93,6 +94,7 @@ Function clickThrowingPoleBtn()
             If x > 0 And y > 0 Then
                 TracePrint "找到【抛竿】按钮坐标： (" & x & ", " & y & ")"
                 Call RandomClick(x, y)
+                Dealy 1000
                 Exit Do  // 进入提竿前的等待状态
             End If
         End If
@@ -201,11 +203,41 @@ Function clickLiftPoleBtn()
             If x > 0 And y > 0 Then
                 TracePrint "找到【提竿】按钮坐标： (" & x & ", " & y & ")"
                 Call RandomClick(x, y)
+                Delay 1000
                 Exit Do  // 退回抛竿状态
             End If
         End If
+
+        // 脱竿了
+        If judgeThrowingPoleStatus() Then
+            Exit Do  // 退回抛竿状态
+        End If
     Loop
     
+End Function
+
+
+Function judgeThrowingPoleStatus()
+    isThrowing = False
+
+    // 【以小钓大（禁用）】按钮坐标在模拟器窗口内的相对位置的百分比
+    // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
+    //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
+    //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
+    btnSX = 0.8524    // 左上角 x 位置百分比
+    btnSY = 0.5701    // 左上角 y 位置百分比
+    btnEX = 0.8881    // 右下角 x 位置百分比
+    btnEY = 0.6312    // 右下角 y 位置百分比
+    btnColor = "2A3851" // 按钮主颜色
+    similarity = 0.8
+    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+    x = coords(0)
+    y = coords(1)
+    If x > 0 And y > 0 Then
+        TracePrint "当前处于【可抛竿】状态"
+        isThrowing = True
+    End If
+    judgeThrowingPoleStatus = isThrowing
 End Function
 
 
