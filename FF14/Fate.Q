@@ -94,6 +94,7 @@ Function searchFate()
             Delay 1000
 
             isRuning = autoRunToFate(x, y)
+            TracePrint "嘻嘻嘻顶顶顶发发大." & isRuning
             If isRuning Then
                 Exit Do  // 进入自动寻路状态
             End If
@@ -111,18 +112,21 @@ Function autoRunToFate(fateX, fateY)
     btnSY = fateY - offsetY     // 自动寻路左上角 y 位置比例
     btnEX = fateX + offsetX     // 自动寻路右下角 x 位置比例
     btnEY = fateY               // 自动寻路右下角 y 位置比例
-    runColor = "85A5AD"
-    mode = 0                    // 检索模式，从左上到右下
-    similarity = 0.8
+
+    runColor = "323F45"
+    mode = 2                    // 检索模式，从右下到左上
+    similarity = 0.9
     FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
     If x > 0 And y > 0 Then
         TracePrint "开始【自动寻路】 ..."
         Call AccurateClick(x, y)
         Delay 1000
         isRuning = True
+        TracePrint "嘻嘻大." & isRuning
     Else
         TracePrint "未找到【自动寻路】按钮！"
     End If
+    TracePrint "嘻嘻嘻发大." & isRuning
     autoRunToFate = isRuning
 End Function
 
@@ -190,11 +194,11 @@ Function autoFight()
         Delay 1000
 
         if finishFate() Then
-            Exit
+            Exit Do
         End If
 
         if finishFate() Then
-            Exit
+            Exit Do
         End If
     Loop
 
