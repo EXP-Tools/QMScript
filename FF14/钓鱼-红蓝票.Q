@@ -32,8 +32,11 @@ SetupOCXFile=
 // 推荐 MuMu模拟器窗口大小为 2560 x 1440 (开发是在此规格下测试的)
 
 Dim EMULATOR                            // 定义全局模拟器对象
-EMULATOR_WIN_NAME = "MuMu模拟器12"		// 模拟器窗口名字
+EMULATOR_WIN_NAME = "MuMu模拟器12"// 模拟器窗口名字
 
+// 暂不支持自动提交，需要退出钓鱼状态，而且有红票/蓝票溢出风险
+// 所以长时间钓鱼需要确保背包空间足够
+AUTO_SUBMIT = False   // 自动提交收藏品
 
 
 // 启动入口
@@ -116,6 +119,51 @@ Function clickConfirmCollectionBtn()
     If x > 0 And y > 0 Then
         TracePrint "找到收藏品【确认】按钮坐标： (" & x & ", " & y & ")"
         Call RandomClick(x, y)
+        Delay 1000
+
+        // 马上提交收藏品，避免占用背包位置
+        // 但是挂机时间太长会有红票/蓝票溢出风险，请自行评估是否开启
+        If AUTO_SUBMIT Then
+            Call clickSubmitCollectionBtn()
+        End If
+    End If
+
+End Function
+
+
+
+Function clickSubmitCollectionBtn()
+
+    // 收藏品【入口】按钮坐标在模拟器窗口内的相对位置的百分比
+    btnSX = 0.8702    // 左上角 x 位置百分比
+    btnSY = 0.4291    // 左上角 y 位置百分比
+    btnEX = 0.8985    // 右下角 x 位置百分比
+    btnEY = 0.4698    // 右下角 y 位置百分比
+    btnColor = "D0F2FD" // 按钮主颜色
+    similarity = 0.8
+    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+    x = coords(0)
+    y = coords(1)
+    If x > 0 And y > 0 Then
+        TracePrint "找到收藏品【入口】按钮坐标： (" & x & ", " & y & ")"
+        Call RandomClick(x, y)
+        Delay 1000
+
+
+        // 收藏品【提交】按钮坐标在模拟器窗口内的相对位置的百分比
+        btnSX = 0.8254    // 左上角 x 位置百分比
+        btnSY = 0.8340    // 左上角 y 位置百分比
+        btnEX = 0.9046    // 右下角 x 位置百分比
+        btnEY = 0.8778    // 右下角 y 位置百分比
+        btnColor = "659FB0" // 按钮主颜色
+        similarity = 0.8
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        x = coords(0)
+        y = coords(1)
+        If x > 0 And y > 0 Then
+            TracePrint "找到收藏品【提交】按钮坐标： (" & x & ", " & y & ")"
+            Call RandomClick(x, y)
+        End If
     End If
 
 End Function
