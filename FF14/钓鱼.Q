@@ -8,8 +8,8 @@ StopHotkey=123
 StopHotkeyMod=0
 RunOnce=1
 EnableWindow=
-MacroID=04e144c6-835c-4708-a6c9-1dbb934b45b7
-Description=金蝶-强袭水晶塔
+MacroID=8192e189-f6b0-4af1-b739-55f971bdbd38
+Description=钓鱼
 Enable=1
 AutoRun=0
 [Repeat]
@@ -23,7 +23,7 @@ SetupOCXFile=
 [Comment]
 
 [Script]
-// QQ14 金蝶强袭水晶塔自动脚本
+// QQ14 自动钓鱼脚本（支持红票）
 // 虽然脚本对任意规格做了同比例自适应，但是可能会出现区域偏差的情况
 // 推荐 MuMu模拟器窗口大小为 2560 x 1440 (开发是在此规格下测试的)
 
@@ -40,146 +40,94 @@ Function main()
     // 初始化模拟器窗体信息（位置与大小）
     InitElemulator(EMULATOR_WIN_NAME)
     
-    // 点击【确认】按钮开始小游戏
-    Call clickStartConfirmBtn()
+    // 抛竿
+    Call clickThrowingPoleBtn()
 
-    Do While True
-        Delay 5000  // 等待 5 秒进入游戏
-
-        // 开始新的一轮游戏
-        cnt = 1
-        Do While True
-            
-            // 在水晶判断区域，无时无刻检测是否有一种颜色的水晶到达然后点击
-            // 因为水晶速度较快可能会失误，但有失误反而更像真人在玩游戏
-            Call clickCrystal()
-            Delay 1
-
-            // cnt 用于读秒，大概在 230 左右一轮游戏就结束，
-            // 此时再判断指定区域的【再战】按钮是否出现，可以减少检索次数提高游戏效率
-			cnt = cnt + 1
-			If cnt >= 230 Then
-        		If clickRetry() Then
-        			TracePrint "完成一轮游戏"
-                	Exit Do  // 开始新的游戏循环
-    			End If
-    		End If
-        Loop
-    Loop
+    // 等待上钩 并 起杆（暂不处理以小钓大，蓝票/红票不需要）
+    Call clickLiftPoleBtn()
+    
+    // 确认收藏品
     
 End Function
 
 
-' 函数名称：clickStartConfirmBtn
-' 功能：点击【强袭水晶塔】小游戏的开始【确认】按钮
-' 实现：
-'   1. 根据按钮在模拟器窗口内的相对位置百分比，计算按钮的屏幕坐标范围。
-'   2. 使用颜色匹配方法查找按钮的具体位置。
-'   3. 在找到按钮位置后，模拟鼠标点击操作。
-' 注意事项：
-'   - 第一次获取坐标写入代码时，需要把模拟器窗口需要左上角贴合屏幕左上角。
-'   - 按钮的颜色和相对坐标需要通过按键精灵的【抓抓】工具获取，不然会出现偏差。
-'   - 以后使用时模拟器可以在屏幕任意位置，代码会计算相对坐标。
-' 返回值：
-'   无返回值
-Function clickStartConfirmBtn()
 
-    // 【确认】按钮坐标在模拟器窗口内的相对位置的百分比
+Function clickThrowingPoleBtn()
+
+    // 【以小钓大（禁用）】按钮坐标在模拟器窗口内的相对位置的百分比
     // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
-    //   按钮左上角 x 相对坐标为 1277，即在相对宽度 60.16% 的位置，即 0.6016
-    //   按钮左上角 y 相对坐标为 833， 即在相对宽度 67.34% 的位置，即 0.6734
-
-    btnSX = 0.5559    // 左上角 x 位置百分比
-    btnSY = 0.6282    // 左上角 y 位置百分比
-    btnEX = 0.6464    // 右下角 x 位置百分比
-    btnEY = 0.6613    // 右下角 y 位置百分比
-    btnColor = "3366C3" // 按钮主颜色
+    //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
+    //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
+    btnSX = 0.8524    // 左上角 x 位置百分比
+    btnSY = 0.5701    // 左上角 y 位置百分比
+    btnEX = 0.8881    // 右下角 x 位置百分比
+    btnEY = 0.6312    // 右下角 y 位置百分比
+    btnColor = "2A3851" // 按钮主颜色
     similarity = 0.8
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-        TracePrint "找到【确认】按钮坐标： (" & x & ", " & y & ")"
-        Call RandomClick(x, y)
-    Else
-        TracePrint "未找到【确认】按钮坐标： (" & x & ", " & y & ")"
-    End If
-End Function
+        TracePrint "当前处于【抛竿】状态"
 
-
-' 函数名称：clickCrystal
-' 功能：检测水晶区域是否出现目标颜色的水晶，并点击对应位置
-' 实现：
-'   1. 定义水晶区域在模拟器窗口内的相对位置百分比。
-'   2. 循环检测多种水晶颜色是否出现。
-'   3. 如果检测到目标颜色的水晶，模拟鼠标点击操作。
-' 注意事项：
-'   - 水晶颜色需要通过按键精灵的【抓抓】工具获取。
-'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
-' 返回值：
-'   无返回值
-Function clickCrystal()
-
-    // 【判定水晶点击区域】在模拟器窗口内的相对位置的百分比
-    cSX = 0.6588    // 左上角 x 位置百分比
-    cSY = 0.7824    // 左上角 y 位置百分比
-    cEX = 0.9358    // 右下角 x 位置百分比
-    cEY = 0.8175    // 右下角 y 位置百分比
-
-    Dim CRYSTAL_COLORS(4)
-    CRYSTAL_COLORS(0) = "4194C1"  // 黄水晶
-    CRYSTAL_COLORS(1) = "B63989"  // 紫水晶
-    CRYSTAL_COLORS(2) = "2C52CE"  // 红水晶
-    CRYSTAL_COLORS(3) = "B68539"  // 蓝水晶
-    similarity = 0.75   // 测试得到最佳的颜色相似度
-
-    For i = 0 To UBound(CRYSTAL_COLORS)
-        coords = FindAreaColor(cSX, cSY, cEX, cEY, CRYSTAL_COLORS(i), similarity)
+		// 【抛竿】按钮坐标在模拟器窗口内的相对位置的百分比
+        btnSX = 0.8454    // 左上角 x 位置百分比
+        btnSY = 0.7435    // 左上角 y 位置百分比
+        btnEX = 0.8972    // 右下角 x 位置百分比
+        btnEY = 0.8250    // 右下角 y 位置百分比
+        btnColor = "B7D0E1" // 按钮主颜色
+        similarity = 0.8
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
         x = coords(0)
         y = coords(1)
-
         If x > 0 And y > 0 Then
-            TracePrint "找到水晶 [" & CRYSTAL_COLORS(i) & "]：(" & x & ", " & y & ")"
-            Call RandomClick(x, y) 
-            Exit Function   // 找到一个水晶后退出循环
+            TracePrint "找到【抛竿】按钮坐标： (" & x & ", " & y & ")"
+            Call RandomClick(x, y)
         End If
-    Next
+    End If
 End Function
 
 
-' 函数名称：clickRetry
-' 功能：检测【再战】按钮重新开始游戏
-' 实现：
-'   1. 定义【再战】按钮区域在模拟器窗口内的相对位置百分比。
-'   2. 检测目标区域内是否出现指定颜色的按钮。
-'   3. 如果检测到按钮，返回 True；否则返回 False。
-' 注意事项：
-'   - 按钮颜色和区域坐标需要通过按键精灵的【抓抓】工具获取。
-'   - 区域坐标为相对百分比，需结合模拟器窗口的实际尺寸计算。
-' 返回值：
-'   布尔值：
-'     - True：检测到【再战】按钮。
-'     - False：未检测到【再战】按钮。
-Function clickRetry()
-    isRetry = False
 
-    // 【再战】按钮坐标在模拟器窗口内的相对位置的百分比
-    btnSX = 0.8398      // 左上角 x 位置百分比
-    btnSY = 0.9003      // 左上角 y 位置百分比
-    btnEX = 0.9227      // 右下角 x 位置百分比
-    btnEY = 0.9403      // 右下角 y 位置百分比
-    btnColor = "649DAE" // 按钮主颜色
-    similarity = 0.8
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-    x = coords(0)
-    y = coords(1)
-    If x > 0 And y > 0 Then
-        TracePrint "找到【再战】按钮坐标： (" & x & ", " & y & ")"
-        Call RandomClick(x, y)
-        isRetry = True
-    End If
+Function clickLiftPoleBtn()
 
-    clickRetry = isRetry
+    Do While True
+        Delay 1000  // 循环等待上钩
+
+        // 【咬钩】提示坐标在模拟器窗口内的相对位置的百分比
+        btnSX = 0.6686    // 左上角 x 位置百分比
+        btnSY = 0.4839    // 左上角 y 位置百分比
+        btnEX = 0.6991    // 右下角 x 位置百分比
+        btnEY = 0.5103    // 右下角 y 位置百分比
+        btnColor = "5599BE" // 按钮主颜色
+        similarity = 0.8
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        x = coords(0)
+        y = coords(1)
+        // MoveTo 1532, 641
+        // MoveTo 1605, 676
+        If x > 0 And y > 0 Then
+            TracePrint "当前处于【咬钩】状态"
+            MoveTo x, y
+
+            // 【提竿】按钮坐标在模拟器窗口内的相对位置的百分比
+            btnSX = 0.8454    // 左上角 x 位置百分比
+            btnSY = 0.7435    // 左上角 y 位置百分比
+            btnEX = 0.8972    // 右下角 x 位置百分比
+            btnEY = 0.8250    // 右下角 y 位置百分比
+            btnColor = "B7D0E1" // 按钮主颜色
+            similarity = 0.8
+            coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+            x = coords(0)
+            y = coords(1)
+            If x > 0 And y > 0 Then
+                TracePrint "找到【提竿】按钮坐标： (" & x & ", " & y & ")"
+                Call RandomClick(x, y)
+                Exit Do  // 退回抛竿状态
+            End If
+        End If
+    Loop
+    
 End Function
 
 
