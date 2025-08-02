@@ -40,13 +40,16 @@ Function main()
     // 初始化模拟器窗体信息（位置与大小）
     InitElemulator(EMULATOR_WIN_NAME)
     
-    // 抛竿
-    Call clickThrowingPoleBtn()
+    Do While True
+        // 抛竿
+        Call clickThrowingPoleBtn()
 
-    // 等待上钩 并 起杆（暂不处理以小钓大，蓝票/红票不需要）
-    Call clickLiftPoleBtn()
-    
-    // 确认收藏品
+        // 等待上钩 并 起杆（暂不处理以小钓大，蓝票/红票不需要）
+        Call clickLiftPoleBtn()
+
+        // 确认收藏品
+        
+    Loop
     
 End Function
 
@@ -54,37 +57,43 @@ End Function
 
 Function clickThrowingPoleBtn()
 
-    // 【以小钓大（禁用）】按钮坐标在模拟器窗口内的相对位置的百分比
-    // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
-    //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
-    //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
-    btnSX = 0.8524    // 左上角 x 位置百分比
-    btnSY = 0.5701    // 左上角 y 位置百分比
-    btnEX = 0.8881    // 右下角 x 位置百分比
-    btnEY = 0.6312    // 右下角 y 位置百分比
-    btnColor = "2A3851" // 按钮主颜色
-    similarity = 0.8
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-    x = coords(0)
-    y = coords(1)
-    If x > 0 And y > 0 Then
-        TracePrint "当前处于【抛竿】状态"
+    Do While True
+        Delay 1000  // 循环等待回到抛竿状态
 
-		// 【抛竿】按钮坐标在模拟器窗口内的相对位置的百分比
-        btnSX = 0.8454    // 左上角 x 位置百分比
-        btnSY = 0.7435    // 左上角 y 位置百分比
-        btnEX = 0.8972    // 右下角 x 位置百分比
-        btnEY = 0.8250    // 右下角 y 位置百分比
-        btnColor = "B7D0E1" // 按钮主颜色
+        // 【以小钓大（禁用）】按钮坐标在模拟器窗口内的相对位置的百分比
+        // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
+        //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
+        //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
+        btnSX = 0.8524    // 左上角 x 位置百分比
+        btnSY = 0.5701    // 左上角 y 位置百分比
+        btnEX = 0.8881    // 右下角 x 位置百分比
+        btnEY = 0.6312    // 右下角 y 位置百分比
+        btnColor = "2A3851" // 按钮主颜色
         similarity = 0.8
         coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
         x = coords(0)
         y = coords(1)
         If x > 0 And y > 0 Then
-            TracePrint "找到【抛竿】按钮坐标： (" & x & ", " & y & ")"
-            Call RandomClick(x, y)
+            TracePrint "当前处于【抛竿】状态"
+
+            // 【抛竿】按钮坐标在模拟器窗口内的相对位置的百分比
+            btnSX = 0.8454    // 左上角 x 位置百分比
+            btnSY = 0.7435    // 左上角 y 位置百分比
+            btnEX = 0.8972    // 右下角 x 位置百分比
+            btnEY = 0.8250    // 右下角 y 位置百分比
+            btnColor = "B7D0E1" // 按钮主颜色
+            similarity = 0.8
+            coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+            x = coords(0)
+            y = coords(1)
+            If x > 0 And y > 0 Then
+                TracePrint "找到【抛竿】按钮坐标： (" & x & ", " & y & ")"
+                Call RandomClick(x, y)
+                Exit Do  // 进入提竿前的等待状态
+            End If
         End If
-    End If
+
+    Loop
 End Function
 
 
@@ -104,11 +113,8 @@ Function clickLiftPoleBtn()
         coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
         x = coords(0)
         y = coords(1)
-        // MoveTo 1532, 641
-        // MoveTo 1605, 676
         If x > 0 And y > 0 Then
             TracePrint "当前处于【咬钩】状态"
-            MoveTo x, y
 
             // 【提竿】按钮坐标在模拟器窗口内的相对位置的百分比
             btnSX = 0.8454    // 左上角 x 位置百分比
