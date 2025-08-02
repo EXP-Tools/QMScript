@@ -207,3 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 *.bak
+*自动备份*
