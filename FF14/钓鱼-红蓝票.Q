@@ -61,7 +61,7 @@ End Function
 ' 函数名称：clickThrowingPoleBtn
 ' 功能：点击【抛竿】按钮
 ' 实现：
-'   1. 定义【抛竿】按钮区域在模拟器窗口内的相对位置百分比。
+'   1. 定义【抛竿】按钮区域在模拟器窗口内的相对位置比例。
 '   2. 检测目标区域内是否出现指定颜色的按钮。
 '   3. 如果检测到按钮，模拟鼠标点击操作。
 ' 注意事项：
@@ -78,10 +78,10 @@ Function clickThrowingPoleBtn()
         // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
         //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
         //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
-        btnSX = 0.8524    // 左上角 x 位置百分比
-        btnSY = 0.5701    // 左上角 y 位置百分比
-        btnEX = 0.8881    // 右下角 x 位置百分比
-        btnEY = 0.6312    // 右下角 y 位置百分比
+        btnSX = 0.8524    // 左上角 x 位置比例
+        btnSY = 0.5701    // 左上角 y 位置比例
+        btnEX = 0.8881    // 右下角 x 位置比例
+        btnEY = 0.6312    // 右下角 y 位置比例
         btnColor = "2A3851" // 按钮主颜色
         similarity = 0.8
         coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
@@ -91,10 +91,10 @@ Function clickThrowingPoleBtn()
             TracePrint "当前处于【可抛竿】状态"
 
             // 【抛竿】按钮坐标在模拟器窗口内的相对位置的百分比
-            btnSX = 0.8454    // 左上角 x 位置百分比
-            btnSY = 0.7435    // 左上角 y 位置百分比
-            btnEX = 0.8972    // 右下角 x 位置百分比
-            btnEY = 0.8250    // 右下角 y 位置百分比
+            btnSX = 0.8454    // 左上角 x 位置比例
+            btnSY = 0.7435    // 左上角 y 位置比例
+            btnEX = 0.8972    // 右下角 x 位置比例
+            btnEY = 0.8250    // 右下角 y 位置比例
             btnColor = "B7D0E1" // 按钮主颜色
             similarity = 0.8
             coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
@@ -117,7 +117,7 @@ End Function
 ' 函数名称：clickConfirmCollectionBtn
 ' 功能：点击【确认收集】按钮
 ' 实现：
-'   1. 定义【确认收集】按钮区域在模拟器窗口内的相对位置百分比。
+'   1. 定义【确认收集】按钮区域在模拟器窗口内的相对位置比例。
 '   2. 检测目标区域内是否出现指定颜色的按钮。
 '   3. 如果检测到按钮，模拟鼠标点击操作。
 ' 注意事项：
@@ -128,10 +128,10 @@ End Function
 Function clickConfirmCollectionBtn()
 
     // 收藏品【确认】按钮坐标在模拟器窗口内的相对位置的百分比
-    btnSX = 0.6033    // 左上角 x 位置百分比
-    btnSY = 0.7292    // 左上角 y 位置百分比
-    btnEX = 0.6678    // 右下角 x 位置百分比
-    btnEY = 0.6312    // 右下角 y 位置百分比
+    btnSX = 0.6033    // 左上角 x 位置比例
+    btnSY = 0.7292    // 左上角 y 位置比例
+    btnEX = 0.6678    // 右下角 x 位置比例
+    btnEY = 0.6312    // 右下角 y 位置比例
     btnColor = "659EAF" // 按钮主颜色
     similarity = 0.8
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
@@ -155,7 +155,7 @@ End Function
 ' 函数名称：clickSubmitCollectionBtn
 ' 功能：点击【提交收集】按钮
 ' 实现：
-'   1. 定义【提交收集】按钮区域在模拟器窗口内的相对位置百分比。
+'   1. 定义【提交收集】按钮区域在模拟器窗口内的相对位置比例。
 '   2. 检测目标区域内是否出现指定颜色的按钮。
 '   3. 如果检测到按钮，模拟鼠标点击操作。
 ' 注意事项：
@@ -166,10 +166,10 @@ End Function
 Function clickSubmitCollectionBtn()
 
     // 收藏品【入口】按钮坐标在模拟器窗口内的相对位置的百分比
-    btnSX = 0.8702    // 左上角 x 位置百分比
-    btnSY = 0.4291    // 左上角 y 位置百分比
-    btnEX = 0.8985    // 右下角 x 位置百分比
-    btnEY = 0.4698    // 右下角 y 位置百分比
+    btnSX = 0.8702    // 左上角 x 位置比例
+    btnSY = 0.4291    // 左上角 y 位置比例
+    btnEX = 0.8985    // 右下角 x 位置比例
+    btnEY = 0.4698    // 右下角 y 位置比例
     btnColor = "D0F2FD" // 按钮主颜色
     similarity = 0.8
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
@@ -182,10 +182,10 @@ Function clickSubmitCollectionBtn()
 
 
         // 收藏品【提交】按钮坐标在模拟器窗口内的相对位置的百分比
-        btnSX = 0.8254    // 左上角 x 位置百分比
-        btnSY = 0.8340    // 左上角 y 位置百分比
-        btnEX = 0.9046    // 右下角 x 位置百分比
-        btnEY = 0.8778    // 右下角 y 位置百分比
+        btnSX = 0.8254    // 左上角 x 位置比例
+        btnSY = 0.8340    // 左上角 y 位置比例
+        btnEX = 0.9046    // 右下角 x 位置比例
+        btnEY = 0.8778    // 右下角 y 位置比例
         btnColor = "659FB0" // 按钮主颜色
         similarity = 0.8
         coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
@@ -203,7 +203,7 @@ End Function
 ' 函数名称：clickLiftPoleBtn
 ' 功能：点击【提竿】按钮
 ' 实现：
-'   1. 定义【提竿】按钮区域在模拟器窗口内的相对位置百分比。
+'   1. 定义【提竿】按钮区域在模拟器窗口内的相对位置比例。
 '   2. 检测目标区域内是否出现指定颜色的按钮。
 '   3. 如果检测到按钮，模拟鼠标点击操作。
 ' 注意事项：
@@ -217,10 +217,10 @@ Function clickLiftPoleBtn()
         Delay 1000  // 循环等待上钩
 
         // 【咬钩】提示坐标在模拟器窗口内的相对位置的百分比
-        btnSX = 0.6686    // 左上角 x 位置百分比
-        btnSY = 0.4839    // 左上角 y 位置百分比
-        btnEX = 0.6991    // 右下角 x 位置百分比
-        btnEY = 0.5103    // 右下角 y 位置百分比
+        btnSX = 0.6686    // 左上角 x 位置比例
+        btnSY = 0.4839    // 左上角 y 位置比例
+        btnEX = 0.6991    // 右下角 x 位置比例
+        btnEY = 0.5103    // 右下角 y 位置比例
         btnColor = "5599BE" // 按钮主颜色
         similarity = 0.8
         coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
@@ -230,10 +230,10 @@ Function clickLiftPoleBtn()
             TracePrint "当前处于【咬钩】状态"
 
             // 【提竿】按钮坐标在模拟器窗口内的相对位置的百分比
-            btnSX = 0.8454    // 左上角 x 位置百分比
-            btnSY = 0.7435    // 左上角 y 位置百分比
-            btnEX = 0.8972    // 右下角 x 位置百分比
-            btnEY = 0.8250    // 右下角 y 位置百分比
+            btnSX = 0.8454    // 左上角 x 位置比例
+            btnSY = 0.7435    // 左上角 y 位置比例
+            btnEX = 0.8972    // 右下角 x 位置比例
+            btnEY = 0.8250    // 右下角 y 位置比例
             btnColor = "B7D0E1" // 按钮主颜色
             similarity = 0.8
             coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
@@ -259,7 +259,7 @@ End Function
 ' 函数名称：judgeThrowingPoleStatus
 ' 功能：判断是否处于【可抛竿】状态
 ' 实现：
-'   1. 定义【以小钓大（禁用）】按钮区域在模拟器窗口内的相对位置百分比。
+'   1. 定义【以小钓大（禁用）】按钮区域在模拟器窗口内的相对位置比例。
 '   2. 检测目标区域内是否出现指定颜色的按钮。
 '   3. 如果检测到按钮，返回 True；否则返回 False。
 ' 注意事项：
@@ -276,10 +276,10 @@ Function judgeThrowingPoleStatus()
     // 譬如模拟器宽高为 2560 x 1440， 去除边框为 2297 x 1326
     //   按钮左上角 x 相对坐标为 1958，即在相对宽度 85.24% 的位置，即 0.8524
     //   按钮左上角 y 相对坐标为 756， 即在相对宽度 57.01% 的位置，即 0.5701
-    btnSX = 0.8524    // 左上角 x 位置百分比
-    btnSY = 0.5701    // 左上角 y 位置百分比
-    btnEX = 0.8881    // 右下角 x 位置百分比
-    btnEY = 0.6312    // 右下角 y 位置百分比
+    btnSX = 0.8524    // 左上角 x 位置比例
+    btnSY = 0.5701    // 左上角 y 位置比例
+    btnEX = 0.8881    // 右下角 x 位置比例
+    btnEY = 0.6312    // 右下角 y 位置比例
     btnColor = "2A3851" // 按钮主颜色
     similarity = 0.8
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
