@@ -38,7 +38,7 @@ SetupOCXFile=
 Dim EMULATOR                       // 定义全局模拟器对象
 EMULATOR_WIN_NAME = "MuMu模拟器12"  // 模拟器窗口名字
 MAX_RUN_TIME = 60000    // 自动寻路最大的超时时间（超时重新找 Fate）
-MAX_FIGHT_TIME = 120    // 自动战斗最大的超时时间（超时重新找 Fate）
+MAX_FIGHT_TIME = 900    // Fate 最大的战斗时间 15min
 
 // 启动入口
 Call main()
@@ -113,7 +113,6 @@ End Function
 Function autoRunToFate(fateX, fateY)
     isRuning = False
     mode = 2          // 检索模式，从右下到左上
-    similarity = 1
 
     // 相近地方有多个定位，可能出现危命【列表】
     offsetX = EMULATOR("Width") * 0.0377
@@ -123,7 +122,7 @@ Function autoRunToFate(fateX, fateY)
     listEX = fateX + offsetX * 3    // 列表右下角 x 位置比例
     listEY = fateY + offsetY        // 列表右下角 y 位置比例
     fateColor = "C36AA0"
-    FindColorEx listSX, listSY, listEX, listEY, fateColor, mode, similarity, x, y
+    FindColorEx listSX, listSY, listEX, listEY, fateColor, mode, 0.9, x, y
     If x > 0 And y > 0 Then
         TracePrint "在【危命列表】选择危命 ..."
         Call AccurateClick(x, y)
@@ -138,14 +137,24 @@ Function autoRunToFate(fateX, fateY)
     btnEX = fateX + offsetX     // 自动寻路右下角 x 位置比例
     btnEY = fateY               // 自动寻路右下角 y 位置比例
     runColor = "323F45"
-    FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
+    
+    FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, 1, x, y
     If x > 0 And y > 0 Then
         TracePrint "开始【自动寻路】 ..."
         Call AccurateClick(x, y)
         Delay 1000
         isRuning = True
+
     Else
-        TracePrint "未找到【自动寻路】按钮！"
+        unrunColor = "6689DB"
+        FindColorEx btnSX, btnSY, btnEX, btnEY, unrunColor, mode, 0.9, x, y
+        If x > 0 And y > 0 Then
+            TracePrint "取消【自动寻路】 ..."
+            Call AccurateClick(x, y)
+            Delay 1000
+        Else
+            TracePrint "未找到【自动寻路】按钮！"
+        End If
     End If
 
     // 地图右下角的水晶位置（说明点击自动寻路按钮失败，需要重新搜索）
@@ -154,8 +163,7 @@ Function autoRunToFate(fateX, fateY)
     cryEX = 0.0531    // 右下角 x 位置比例
     cryEY = 0.9336    // 右下角 y 位置比例
     cryColor = "F5B633" // Fate 主颜色
-    similarity = 0.9
-    coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, similarity)
+    coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, 0.9)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
@@ -177,7 +185,7 @@ Function joinToFate()
     btnSY = 0.2149      // 左上角 y 位置比例
     btnEX = 0.8123      // 右下角 x 位置比例
     btnEY = 0.2549      // 右下角 y 位置比例
-    btnColor = "4DA1C4"
+    btnColor = "71C1BF"
 
     // 参与 fate 按钮旁边的 【<】 标签
     tagSX = 0.8080      // 左上角 x 位置比例
@@ -201,7 +209,7 @@ Function joinToFate()
         tagY = tagCoords(1)
 
         IF tagX > 0 And tagY > 0 Then
-
+            TracePrint "疑似进入【Fate】范围 ..."
             btnCoords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
             btnX = btnCoords(0)
             btnY = btnCoords(1)
