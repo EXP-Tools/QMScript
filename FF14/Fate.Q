@@ -69,20 +69,25 @@ End Function
 Function openMap()
     KeyPress "M", 1
     Delay 2000
-End Function
 
+    // 缩小地图一次，把全图显示到屏幕中
+    smallX = EMULATOR("Width") * 0.0383
+    smallY = EMULATOR("Height") * 0.6923
+    Call AccurateClick(smallX, smallY)
+    Delay 2000
+End Function
 
 
 Function searchFate()
     Do While True
         TracePrint "正在检索【Fate】..."
         Delay 1000
-
+        
         // 从地图的左上到右下检索第一个 Fate 位置
-        mapSX = 0.1018    // 左上角 x 位置比例
-        mapSY = 0.1221    // 左上角 y 位置比例
-        mapEX = 0.9412    // 右下角 x 位置比例
-        mapEY = 0.9864    // 右下角 y 位置比例
+        mapSX = 0.1349    // 左上角 x 位置比例
+        mapSY = 0.1666    // 左上角 y 位置比例
+        mapEX = 0.7609    // 右下角 x 位置比例
+        mapEY = 0.9479    // 右下角 y 位置比例
         fateColor = "C26BAB" // Fate 主颜色
         similarity = 0.8
         coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, similarity)
@@ -294,7 +299,8 @@ End Function
 
 Function exitFate()
     isFin = finishFate()
-    isDead = deadBack()
+    // isDead = deadBack()
+    isDead = False
     exitFate = isFin Or isDead
 End Function
 
