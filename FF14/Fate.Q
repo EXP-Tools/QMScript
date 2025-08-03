@@ -229,14 +229,14 @@ Function autoFight()
         TracePrint "正在释放技能"
         Delay 1000
 
-        // 诗人技能（打完一套 15s）
+        // 诗人技能（打完一套 17s）
         if ArcherSkills() Then
             Exit Do
         End If
 
         // 超时战斗退出
         cnt = cnt + 1
-        If cnt * 15 > MAX_FIGHT_TIME Then
+        If cnt * 17 > MAX_FIGHT_TIME Then
             Exit Do
         End If
     Loop
@@ -246,16 +246,32 @@ Function autoFight()
 End Function
 
 
-// 平 A
+// 移动 + 平 A
 Function NormalAttack()
-    KeyPress "Up", 1
-    Delay 500
-    KeyPress "Down", 1
-    Delay 500
+    keyDown "W", 1
+    KeyPress "Up", 3
+    Delay 1000
+    KeyUp "W", 1
+
+    keyDown "D", 1
+    KeyPress "Down", 3
+    Delay 1000
+    KeyUp "D", 1
+
+    keyDown "S", 1
+    KeyPress "Up", 3
+    Delay 1000
+    KeyUp "S", 1
+
+    keyDown "A", 1
+    KeyPress "Down", 3
+    Delay 1000
+    KeyUp "A", 1
 End Function
 
 
-// 打完一套需要 15s
+
+// 打完一套需要 17s
 Function ArcherSkills()
     // 猛者强击（+ATK）
     KeyPress "R", 1
