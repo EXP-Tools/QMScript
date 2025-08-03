@@ -407,20 +407,26 @@ End Function
 
 // 完成 Fate 点击【退出危命】按钮
 Function clickFinFate()
-    btnSX = 0.6090      // 左上角 x 位置比例
-    btnSY = 0.8627      // 左上角 y 位置比例
-    btnEX = 0.7074      // 右下角 x 位置比例
-    btnEY = 0.9057      // 右下角 y 位置比例
-    btnColor = "659EB0"
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-    x = coords(0)
-    y = coords(1)
-    If x > 0 And y > 0 Then
-        TracePrint "完成 Fate，【退出危命】任务 ..."
-        Delay 2000
-        Call RandomClick(x, y)
-        Delay 3000
-    End If
+    Do While True
+        btnSX = 0.6090      // 左上角 x 位置比例
+        btnSY = 0.8627      // 左上角 y 位置比例
+        btnEX = 0.7074      // 右下角 x 位置比例
+        btnEY = 0.9057      // 右下角 y 位置比例
+        btnColor = "659EB0"
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        x = coords(0)
+        y = coords(1)
+        If x > 0 And y > 0 Then
+            TracePrint "完成 Fate，【退出危命】任务 ..."
+            Delay 2000
+            Call RandomClick(x, y)
+            Delay 1000
+
+        Else
+            // 直到真正退出结算画面才退出
+            Exit Do
+        End If
+    Loop
 End Function
 
 
@@ -451,27 +457,37 @@ Function deadBack()
         If x > 0 And y > 0 Then
 
             // 无法战斗【确认】按钮
-            btnSX = 0.5816      // 左上角 x 位置比例
-            btnSY = 0.6523      // 左上角 y 位置比例
-            btnEX = 0.6774      // 右下角 x 位置比例
-            btnEY = 0.8975      // 右下角 y 位置比例
-            btnColor = "66A1B2"
-            coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-            x = coords(0)
-            y = coords(1)
-            If x > 0 And y > 0 Then
-                TracePrint "战斗死亡【确认】，返回水晶 ..."
-                Delay 2000
-                Call RandomClick(x, y)
-                Delay 3000
-                isDead = True
-            End If
+            Call clickDeadBack()
+            isDead = True
         End If
     End If
 
     deadBack = isDead
 End Function
 
+
+// 无法战斗【确认】按钮
+Function clickDeadBack()
+    Do While True
+        btnSX = 0.5816      // 左上角 x 位置比例
+        btnSY = 0.6523      // 左上角 y 位置比例
+        btnEX = 0.6774      // 右下角 x 位置比例
+        btnEY = 0.8975      // 右下角 y 位置比例
+        btnColor = "66A1B2"
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        x = coords(0)
+        y = coords(1)
+        If x > 0 And y > 0 Then
+            TracePrint "战斗死亡【确认】，返回水晶 ..."
+            Delay 2000
+            Call RandomClick(x, y)
+            Delay 2000
+        Else
+            // 直到真正退出结算画面才退出
+            Exit Do
+        End If
+    Loop
+End Function
 
 
 ' 函数名称：InitElemulator
