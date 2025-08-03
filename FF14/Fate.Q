@@ -207,7 +207,9 @@ Function joinToFate()
             
             If btnX > 0 And btnY > 0 Then
                 TracePrint "进入【Fate】范围，参加战斗！"
-                Call AccurateClick(btnX, btnY)
+                joinBtnX = EMULATOR("Width") * 0.7509
+                joinBtnY = EMULATOR("Height") * 0.2194
+                Call AccurateClick(joinBtnX, joinBtnY)
                 Delay 1000
                 isGoal = True
                 Exit Do  // 进入战斗状态
