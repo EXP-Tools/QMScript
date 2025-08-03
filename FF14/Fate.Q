@@ -23,18 +23,19 @@ SetupOCXFile=
 [Comment]
 
 [Script]
-// QQ14 自动 Fate 脚本（使用诗人，在北萨开脚本）
+// QQ14 自动 Fate 脚本
 // 建议：
 //   1. 使用诗人
-//   2. 在北萨开脚本
-//   3. 关闭地图上不必要的标记减少干扰，如 宝箱、风景、风脉、自定义标记 等
+//   2. 召唤搭档
+//   3. 使用军票 / 部队特效
+//   4. 关闭地图上不必要的标记减少干扰，如 宝箱、风景、风脉、自定义标记 等
 // 开始运行脚本： F10
 // 终止脚本运行： F12
 // 虽然脚本对任意规格做了同比例自适应，但是可能会出现区域偏差的情况
 // 推荐 MuMu模拟器窗口大小为 2560 x 1440 (开发是在此规格下测试的)
 
-Dim EMULATOR                            // 定义全局模拟器对象
-EMULATOR_WIN_NAME = "MuMu模拟器12"// 模拟器窗口名字
+Dim EMULATOR                       // 定义全局模拟器对象
+EMULATOR_WIN_NAME = "MuMu模拟器12"  // 模拟器窗口名字
 
 
 // 启动入口
@@ -173,7 +174,7 @@ Function joinToFate()
             btnCoords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
             btnX = btnCoords(0)
             btnY = btnCoords(1)
-            Delay 2000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
+            Delay 5000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
             
             If btnX > 0 And btnY > 0 Then
                 TracePrint "进入【Fate】范围，参加战斗！"
@@ -208,9 +209,9 @@ End Function
 // 平 A
 Function NormalAttack()
     KeyPress "Up", 1
-    Delay 1000
+    Delay 500
     KeyPress "Down", 1
-    Delay 1000
+    Delay 500
 End Function
 
 
@@ -219,7 +220,7 @@ Function ArcherSkills()
     KeyPress "R", 1
     Delay 1000
 
-    // Call NormalAttack()
+    Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -235,7 +236,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    // Call NormalAttack()
+    Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -247,7 +248,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    // Call NormalAttack()
+    Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -259,7 +260,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    // Call NormalAttack()
+    Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -271,7 +272,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    // Call NormalAttack()
+    Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -283,7 +284,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    // Call NormalAttack()
+    Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -300,21 +301,34 @@ End Function
 
 Function finishFate()
     isFin = False
+    similarity = 0.8
 
-    // 完成 Fate【退出】按钮
-    btnSX = 0.6090      // 左上角 x 位置比例
-    btnSY = 0.8627      // 左上角 y 位置比例
-    btnEX = 0.7074      // 右下角 x 位置比例
-    btnEY = 0.9057      // 右下角 y 位置比例
-    btnColor = "659EB0"
-    similarity = 0.9
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+    // 完成 Fate【标题】文字
+    tagSX = 0.4488      // 左上角 x 位置比例
+    tagSY = 0.1606      // 左上角 y 位置比例
+    tagEX = 0.5441      // 右下角 x 位置比例
+    tagEY = 0.2556      // 右下角 y 位置比例
+    tagColor = "FF76E2"
+    coords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-        TracePrint "【完成】Fate，退出危命任务 ..."
-        Call RandomClick(x, y)
-        Delay 5000
+
+        // 完成 Fate【退出】按钮
+        btnSX = 0.6090      // 左上角 x 位置比例
+        btnSY = 0.8627      // 左上角 y 位置比例
+        btnEX = 0.7074      // 右下角 x 位置比例
+        btnEY = 0.9057      // 右下角 y 位置比例
+        btnColor = "659EB0"
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        x = coords(0)
+        y = coords(1)
+        If x > 0 And y > 0 Then
+            TracePrint "【完成】Fate，退出危命任务 ..."
+            Call RandomClick(x, y)
+            Delay 5000
+            isFin = True
+        End If
     End If
 
     finishFate = isFin
@@ -323,24 +337,37 @@ End Function
 
 Function deadBack()
     isDead = False
+    similarity = 0.8
 
-    // 死亡回归【确认】按钮
-    btnSX = 0.5816      // 左上角 x 位置比例
-    btnSY = 0.6523      // 左上角 y 位置比例
-    btnEX = 0.6774      // 右下角 x 位置比例
-    btnEY = 0.8975      // 右下角 y 位置比例
-    btnColor = "66A1B2"
-    similarity = 0.9
+    // 死亡回归【保留】按钮（战斗画面颜色比较杂，多一次判断会更准确）
+    btnSX = 0.3413      // 左上角 x 位置比例
+    btnSY = 0.6334      // 左上角 y 位置比例
+    btnEX = 0.4418      // 右下角 x 位置比例
+    btnEY = 0.6809      // 右下角 y 位置比例
+    btnColor = "596C78"
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-        TracePrint "战斗死亡【确认】，返回水晶 ..."
-        Call RandomClick(x, y)
-        Delay 5000
+
+        // 死亡回归【确认】按钮
+        btnSX = 0.5816      // 左上角 x 位置比例
+        btnSY = 0.6523      // 左上角 y 位置比例
+        btnEX = 0.6774      // 右下角 x 位置比例
+        btnEY = 0.8975      // 右下角 y 位置比例
+        btnColor = "66A1B2"
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        x = coords(0)
+        y = coords(1)
+        If x > 0 And y > 0 Then
+            TracePrint "战斗死亡【确认】，返回水晶 ..."
+            Call RandomClick(x, y)
+            Delay 5000
+            isDead = True
+        End If
     End If
 
-    finishFate = isFin
+    deadBack = isDead
 End Function
 
 
@@ -464,5 +491,3 @@ Function AccurateClick(x, y)
     MoveTo x, y
     LeftClick 1
 End Function
-
-
