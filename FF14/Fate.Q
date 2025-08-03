@@ -36,7 +36,7 @@ SetupOCXFile=
 
 Dim EMULATOR                       // 定义全局模拟器对象
 EMULATOR_WIN_NAME = "MuMu模拟器12"  // 模拟器窗口名字
-
+MAX_RUN_TIME = 60000                // 自动寻路最大的超时时间（超时重新找 Fate）
 
 // 启动入口
 Call main()
@@ -54,12 +54,13 @@ Function main()
         // 检索 Fate 并自动寻路
         Call searchFate()
         
-        // 检测是否到达目的地
-        Call joinToFate()
+        // 检测是否到达目的地参战
+        isGoal = joinToFate()
 
         // 开启自动战斗
-        Call autoFight()
-
+        If isGoal Then
+            Call autoFight()
+        End If
     Loop
     
 End Function
@@ -166,6 +167,7 @@ End Function
 
 
 Function joinToFate()
+    isGoal = False
     similarity = 0.8
 
     // 【参加】Fate 按钮
@@ -182,9 +184,14 @@ Function joinToFate()
     tagEY = 0.2330      // 右下角 y 位置比例
     tagColor = "9EBCC3"
     
+    runTime = 0
     Do While True
         TracePrint "正在【自动寻路】到 Fate..."
         Delay 5000  // 检测间隔拉长，避免点到过路的 Fate
+        runTime = runTime + 5000
+        If runTime > MAX_RUN_TIME Then
+            Exit Do     // 超过 1 分钟还没走到目的地，重新开始找 Fate
+        End If
 
         tagCoords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
         tagX = tagCoords(0)
@@ -201,10 +208,12 @@ Function joinToFate()
                 TracePrint "进入【Fate】范围，参加战斗！"
                 Call AccurateClick(btnX, btnY)
                 Delay 1000
+                isGoal = True
                 Exit Do  // 进入战斗状态
             End If
         End If
     Loop
+    joinToFate = isGoal
 End Function
 
 
