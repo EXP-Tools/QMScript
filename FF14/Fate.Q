@@ -26,7 +26,7 @@ SetupOCXFile=
 // QQ14 自动 Fate 脚本
 // 建议：
 //   1. 使用诗人
-//   2. 召唤搭档
+//   2. 召唤搭档（推荐奶妈）
 //   3. 使用军票 / 部队特效
 //   4. 关闭地图上不必要的标记减少干扰，如 宝箱、风景、风脉、自定义标记 等
 // 开始运行脚本： F10
@@ -204,10 +204,10 @@ Function joinToFate()
             btnCoords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
             btnX = btnCoords(0)
             btnY = btnCoords(1)
-            Delay 3000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
             
             If btnX > 0 And btnY > 0 Then
                 TracePrint "进入【Fate】范围，参加战斗！"
+                Delay 3000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
                 joinBtnX = EMULATOR("Width") * 0.7509
                 joinBtnY = EMULATOR("Height") * 0.2300
                 Call AccurateClick(joinBtnX, joinBtnY)
@@ -227,7 +227,7 @@ Function autoFight()
         TracePrint "正在自动战斗（诗人模式）..."
         Delay 1000
 
-        // 诗人技能（打完一套循环 36 秒）
+        // 诗人技能（打完一套循环 18 秒）
         if ArcherSkills() Then
             TracePrint "检测到战斗结束 ..."
             Exit Do
@@ -235,7 +235,7 @@ Function autoFight()
 
         // 超时战斗退出
         cnt = cnt + 1
-        If cnt * 36 > MAX_FIGHT_TIME Then
+        If cnt * 18 > MAX_FIGHT_TIME Then
             TracePrint "超时还没结束战斗 ..."
             Exit Do
         End If
@@ -243,44 +243,50 @@ Function autoFight()
 End Function
 
 
-// 移动 + 平 A (4 秒)
-Function NormalAttack()
-    MiddleClick 1           // 自动平 A
+// 移动 + 平 A (1 秒)
+Function NormalAttack(direct)
+    If direct = "W" Then
+        keyDown "W", 1          // 移动
+        KeyPress "Up", 3        // 手动平 A
+        Delay 1000
+        KeyUp "W", 1
+    End If
 
-    keyDown "W", 1          // 移动
-    KeyPress "Up", 3        // 手动平 A
-    Delay 1000
-    KeyUp "W", 1
+    If direct = "D" Then
+        keyDown "D", 1
+        KeyPress "Down", 3
+        Delay 1000
+        KeyUp "D", 1
+    End If
 
-    keyDown "D", 1
-    KeyPress "Down", 3
-    Delay 1000
-    KeyUp "D", 1
+    If direct = "S" Then
+        keyDown "S", 1
+        KeyPress "Up", 3
+        Delay 1000
+        KeyUp "S", 1
+    End If
 
-    keyDown "S", 1
-    KeyPress "Up", 3
-    Delay 1000
-    KeyUp "S", 1
-
-    keyDown "A", 1
-    KeyPress "Down", 3
-    Delay 1000
-    KeyUp "A", 1
-
-    MiddleClick 1           // 关闭自动平 A
+    If direct = "A" Then
+        keyDown "A", 1
+        KeyPress "Down", 3
+        Delay 1000
+        KeyUp "A", 1
+    End If
 End Function
 
 
 
-// 打完一套循环需要 36 秒
+// 打完一套循环需要 18 秒
 Function ArcherSkills()
-    
+    MiddleClick 1           // 自动平 A
+
     // 猛者强击（+ATK）
     KeyPress "R", 1
     Delay 1000
 
-    Call NormalAttack()
+    Call NormalAttack("W")
     if exitFate() Then
+        MiddleClick 1       // 关闭自动平 A
         ArcherSkills = True
         Exit Function
     End If
@@ -295,8 +301,9 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    Call NormalAttack()
+    Call NormalAttack("D")
     if exitFate() Then
+        MiddleClick 1       // 关闭自动平 A
         ArcherSkills = True
         Exit Function
     End If
@@ -307,8 +314,9 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    Call NormalAttack()
+    Call NormalAttack("S")
     if exitFate() Then
+        MiddleClick 1       // 关闭自动平 A
         ArcherSkills = True
         Exit Function
     End If
@@ -319,8 +327,9 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    Call NormalAttack()
+    Call NormalAttack("A")
     if exitFate() Then
+        MiddleClick 1       // 关闭自动平 A
         ArcherSkills = True
         Exit Function
     End If
@@ -331,8 +340,9 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    Call NormalAttack()
+    Call NormalAttack("W")
     if exitFate() Then
+        MiddleClick 1       // 关闭自动平 A
         ArcherSkills = True
         Exit Function
     End If
@@ -343,11 +353,14 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
-    Call NormalAttack()
+    Call NormalAttack("S")
     if exitFate() Then
+        MiddleClick 1       // 关闭自动平 A
         ArcherSkills = True
         Exit Function
     End If
+    
+    ArcherSkills = False
 End Function
 
 
@@ -392,7 +405,7 @@ Function finishFate()
 End Function
 
 
-// 完成 Fate 点击【退出】按钮
+// 完成 Fate 点击【退出危命】按钮
 Function clickFinFate()
     btnSX = 0.6090      // 左上角 x 位置比例
     btnSY = 0.8627      // 左上角 y 位置比例
@@ -403,9 +416,10 @@ Function clickFinFate()
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-        TracePrint "【完成】Fate，退出危命任务 ..."
+        TracePrint "完成 Fate，【退出危命】任务 ..."
+        Delay 2000
         Call RandomClick(x, y)
-        Delay 5000
+        Delay 3000
     End If
 End Function
 
@@ -446,11 +460,8 @@ Function deadBack()
             x = coords(0)
             y = coords(1)
             If x > 0 And y > 0 Then
-                // 关闭自动平 A
-                MiddleClick 1
-                Delay 2000
-
                 TracePrint "战斗死亡【确认】，返回水晶 ..."
+                Delay 2000
                 Call RandomClick(x, y)
                 Delay 3000
                 isDead = True
