@@ -110,6 +110,8 @@ End Function
 
 Function autoRunToFate(fateX, fateY)
     isRuning = False
+    mode = 2          // 检索模式，从右下到左上
+    similarity = 0.9
 
     // 相近地方有多个定位，可能出现危命【列表】
     offsetX = EMULATOR("Width") * 0.0377
@@ -119,7 +121,7 @@ Function autoRunToFate(fateX, fateY)
     listEX = fateX + offsetX * 10   // 列表右下角 x 位置比例
     listEY = fateY + offsetY        // 列表右下角 y 位置比例
     fateColor = "C36AA0"
-    FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
+    FindColorEx listSX, listSY, listEX, listEY, fateColor, mode, similarity, x, y
     If x > 0 And y > 0 Then
         TracePrint "在【危命列表】选择危命 ..."
         Call AccurateClick(x, y)
@@ -134,8 +136,6 @@ Function autoRunToFate(fateX, fateY)
     btnEX = fateX + offsetX     // 自动寻路右下角 x 位置比例
     btnEY = fateY               // 自动寻路右下角 y 位置比例
     runColor = "323F45"
-    mode = 2                    // 检索模式，从右下到左上
-    similarity = 0.9
     FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
     If x > 0 And y > 0 Then
         TracePrint "开始【自动寻路】 ..."
