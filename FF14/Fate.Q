@@ -27,8 +27,9 @@ SetupOCXFile=
 // 建议：
 //   1. 使用诗人
 //   2. 召唤搭档（推荐奶妈）
-//   3. 使用军票 / 部队特效
+//   3. 在摩杜纳，和北萨一样多人，好处是 fate 的怪比较接近圈中心（北萨大多怪都在 Fate 圈边，自动寻路到地也是被罚站）
 //   4. 关闭地图上不必要的标记减少干扰，如 宝箱、风景、风脉、自定义标记 等
+//   5. 使用军票 / 部队特效
 // 开始运行脚本： F10
 // 终止脚本运行： F12
 // 虽然脚本对任意规格做了同比例自适应，但是可能会出现区域偏差的情况
@@ -85,7 +86,7 @@ Function searchFate()
         TracePrint "正在检索【Fate】..."
         Delay 1000
 
-        // 从地图的左上到右下检索第一个 Fate 位置
+        // 从地图的中心开始检索第一个 Fate 位置
         mapSX = 0.1349    // 左上角 x 位置比例
         mapSY = 0.1666    // 左上角 y 位置比例
         mapEX = 0.7609    // 右下角 x 位置比例
@@ -480,7 +481,7 @@ Function clickDeadBack()
             TracePrint "战斗死亡【确认】，返回水晶 ..."
             Delay 2000
             Call RandomClick(x, y)
-            Delay 1000
+            Delay 10000    // 等待复活
             isDead = True
         Else
             // 直到真正退出结算画面才退出
@@ -563,7 +564,7 @@ Function FindAreaColor(psx, psy, pex, pey, hexColor, similarity)
     aey = EMULATOR("Top") + rey         // 相对于屏幕的区域终止 Y 坐标
     // TracePrint "搜索区域的绝对范围： (" & asx & ", " & asy & ") - (" & aex & ", " & aey & ")"
 
-    mode = 0            // 检索模式，从左上到右下
+    mode = 1            // 检索模式，从中心开始检索
     FindColorEx asx, asy, aex, aey, hexColor, mode, similarity, rstX, rstY
 
     Dim coords(2)
