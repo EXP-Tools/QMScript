@@ -82,7 +82,7 @@ Function searchFate()
     Do While True
         TracePrint "正在检索【Fate】..."
         Delay 1000
-        
+
         // 从地图的左上到右下检索第一个 Fate 位置
         mapSX = 0.1349    // 左上角 x 位置比例
         mapSY = 0.1666    // 左上角 y 位置比例
@@ -109,6 +109,22 @@ End Function
 
 Function autoRunToFate(fateX, fateY)
     isRuning = False
+
+    // 相近地方有多个定位，可能出现危命【列表】
+    offsetX = EMULATOR("Width") * 0.0377
+    offsetY = EMULATOR("Height") * 0.2167
+    listSX = fateX + offsetX        // 列表左上角 x 位置比例
+    listSY = fateY - offsetY        // 列表左上角 y 位置比例
+    listEX = fateX + offsetX * 10   // 列表右下角 x 位置比例
+    listEY = fateY + offsetY        // 列表右下角 y 位置比例
+    fateColor = "C36AA0"
+    FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
+    If x > 0 And y > 0 Then
+        TracePrint "在【危命列表】选择危命 ..."
+        Call AccurateClick(x, y)
+        Delay 1000
+    End If
+
     // 【自动寻路】按钮
     offsetX = EMULATOR("Width") * 0.1741  // 2560 最远是 400px，400 对应位置比例是 0.1741
     offsetY = EMULATOR("Height") * 0.1508 // 1440 大概是 200px，200 对应位置比例是 0.1508
