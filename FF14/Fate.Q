@@ -36,8 +36,8 @@ SetupOCXFile=
 
 Dim EMULATOR                       // 定义全局模拟器对象
 EMULATOR_WIN_NAME = "MuMu模拟器12"  // 模拟器窗口名字
-MAX_RUN_TIME = 60000     // 自动寻路最大的超时时间（超时重新找 Fate）
-MAX_FIGHT_TIME = 120000  // 自动战斗最大的超时时间（超时重新找 Fate）
+MAX_RUN_TIME = 60000    // 自动寻路最大的超时时间（超时重新找 Fate）
+MAX_FIGHT_TIME = 120    // 自动战斗最大的超时时间（超时重新找 Fate）
 
 // 启动入口
 Call main()
@@ -116,7 +116,7 @@ Function autoRunToFate(fateX, fateY)
 
     // 相近地方有多个定位，可能出现危命【列表】
     offsetX = EMULATOR("Width") * 0.0377
-    offsetY = EMULATOR("Height") * 0.2167
+    offsetY = EMULATOR("Height") * 0.2000
     listSX = fateX + offsetX        // 列表左上角 x 位置比例
     listSY = fateY - offsetY        // 列表左上角 y 位置比例
     listEX = fateX + offsetX * 10   // 列表右下角 x 位置比例
@@ -191,6 +191,7 @@ Function joinToFate()
         Delay 5000  // 检测间隔拉长，避免点到过路的 Fate
         runTime = runTime + 5000
         If runTime > MAX_RUN_TIME Then
+            TracePrint "超时还没走到目的地 ..."
             Exit Do     // 超过 1 分钟还没走到目的地，重新开始找 Fate
         End If
 
@@ -208,7 +209,7 @@ Function joinToFate()
             If btnX > 0 And btnY > 0 Then
                 TracePrint "进入【Fate】范围，参加战斗！"
                 joinBtnX = EMULATOR("Width") * 0.7509
-                joinBtnY = EMULATOR("Height") * 0.2194
+                joinBtnY = EMULATOR("Height") * 0.2300
                 Call AccurateClick(joinBtnX, joinBtnY)
                 Delay 1000
                 isGoal = True
@@ -221,35 +222,33 @@ End Function
 
 
 Function autoFight()
-    // 自动平 A
-    MiddleClick 1
-
     cnt = 0
     Do While True
-        TracePrint "正在释放技能"
+        TracePrint "正在自动战斗（诗人模式）..."
         Delay 1000
 
-        // 诗人技能（打完一套 17s）
+        // 诗人技能（打完一套循环 36 秒）
         if ArcherSkills() Then
+            TracePrint "检测到战斗结束 ..."
             Exit Do
         End If
 
         // 超时战斗退出
         cnt = cnt + 1
-        If cnt * 17 > MAX_FIGHT_TIME Then
+        If cnt * 36 > MAX_FIGHT_TIME Then
+            TracePrint "超时还没结束战斗 ..."
             Exit Do
         End If
     Loop
-
-    // 关闭自动平 A
-    MiddleClick 1
 End Function
 
 
-// 移动 + 平 A
+// 移动 + 平 A (4 秒)
 Function NormalAttack()
-    keyDown "W", 1
-    KeyPress "Up", 3
+    MiddleClick 1           // 自动平 A
+
+    keyDown "W", 1          // 移动
+    KeyPress "Up", 3        // 手动平 A
     Delay 1000
     KeyUp "W", 1
 
@@ -267,12 +266,15 @@ Function NormalAttack()
     KeyPress "Down", 3
     Delay 1000
     KeyUp "A", 1
+
+    MiddleClick 1           // 关闭自动平 A
 End Function
 
 
 
-// 打完一套需要 17s
+// 打完一套循环需要 36 秒
 Function ArcherSkills()
+    
     // 猛者强击（+ATK）
     KeyPress "R", 1
     Delay 1000
@@ -446,10 +448,11 @@ Function deadBack()
             If x > 0 And y > 0 Then
                 // 关闭自动平 A
                 MiddleClick 1
+                Delay 2000
 
                 TracePrint "战斗死亡【确认】，返回水晶 ..."
                 Call RandomClick(x, y)
-                Delay 5000
+                Delay 3000
                 isDead = True
             End If
         End If
