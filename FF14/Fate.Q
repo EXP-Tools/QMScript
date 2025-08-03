@@ -116,10 +116,10 @@ Function autoRunToFate(fateX, fateY)
 
     // 相近地方有多个定位，可能出现危命【列表】
     offsetX = EMULATOR("Width") * 0.0377
-    offsetY = EMULATOR("Height") * 0.2000
+    offsetY = EMULATOR("Height") * 0.1000
     listSX = fateX + offsetX        // 列表左上角 x 位置比例
     listSY = fateY - offsetY        // 列表左上角 y 位置比例
-    listEX = fateX + offsetX * 10   // 列表右下角 x 位置比例
+    listEX = fateX + offsetX * 3    // 列表右下角 x 位置比例
     listEY = fateY + offsetY        // 列表右下角 y 位置比例
     fateColor = "C36AA0"
     FindColorEx listSX, listSY, listEX, listEY, fateColor, mode, similarity, x, y
@@ -135,7 +135,7 @@ Function autoRunToFate(fateX, fateY)
     btnSX = fateX               // 自动寻路左上角 x 位置比例
     btnSY = fateY - offsetY     // 自动寻路左上角 y 位置比例
     btnEX = fateX + offsetX     // 自动寻路右下角 x 位置比例
-    btnEY = fateY               // 自动寻路右下角 y 位置比例
+    btnEY = fateY// 自动寻路右下角 y 位置比例
     runColor = "323F45"
     FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
     If x > 0 And y > 0 Then
@@ -153,7 +153,7 @@ Function autoRunToFate(fateX, fateY)
     cryEX = 0.0531    // 右下角 x 位置比例
     cryEY = 0.9336    // 右下角 y 位置比例
     cryColor = "F5B633" // Fate 主颜色
-    similarity = 0.8
+    similarity = 0.9
     coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, similarity)
     x = coords(0)
     y = coords(1)
@@ -171,14 +171,14 @@ Function joinToFate()
     isGoal = False
     similarity = 0.8
 
-    // 【参加】Fate 按钮
+    // 【参与】Fate 按钮
     btnSX = 0.7283      // 左上角 x 位置比例
     btnSY = 0.2149      // 左上角 y 位置比例
     btnEX = 0.8123      // 右下角 x 位置比例
     btnEY = 0.2549      // 右下角 y 位置比例
     btnColor = "4DA1C4"
 
-    // 参加 fate 按钮旁边的 【<】 标签
+    // 参与 fate 按钮旁边的 【<】 标签
     tagSX = 0.8080      // 左上角 x 位置比例
     tagSY = 0.1968      // 左上角 y 位置比例
     tagEX = 0.8280      // 右下角 x 位置比例
@@ -206,8 +206,8 @@ Function joinToFate()
             btnY = btnCoords(1)
             
             If btnX > 0 And btnY > 0 Then
-                TracePrint "进入【Fate】范围，参加战斗！"
-                Delay 3000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
+                TracePrint "进入【Fate】范围，参与战斗！"
+                Delay 2000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
                 joinBtnX = EMULATOR("Width") * 0.7509
                 joinBtnY = EMULATOR("Height") * 0.2300
                 Call AccurateClick(joinBtnX, joinBtnY)
@@ -294,7 +294,7 @@ Function ArcherSkills()
     // 贤者的叙述谣 + 死亡箭雨
     KeyDown "4", 1
     Delay 200
-    MoveTo 0, 0
+    MoveTo EMULATOR("Left") + 1, EMULATOR("Top") + 1
     Delay 200
     KeyUp "4", 1
     Delay 1000
@@ -373,31 +373,27 @@ End Function
 
 Function finishFate()
     isFin = False
-    similarity = 0.8
+    similarity = 0.9
 
     // 完成 Fate【标题】文字
     tagSX = 0.4488      // 左上角 x 位置比例
-    tagSY = 0.1606      // 左上角 y 位置比例
+    tagSY = 0.2315      // 左上角 y 位置比例
     tagEX = 0.5441      // 右下角 x 位置比例
-    tagEY = 0.2556      // 右下角 y 位置比例
-    succColor = "FF76E2" // 成功
+    tagEY = 0.2752      // 右下角 y 位置比例
+    succColor = "FF71EB" // 成功
     failColor = "FFAD7E" // 失败
     coords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, succColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-        // 成功完成 Fate
-        Call clickFinFate()
-        isFin = True
+        isFin = clickFinFate()     // 可能 Fate 成功
     Else
         
-        // 失败完成 Fate
         coords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, failColor, similarity)
         x = coords(0)
         y = coords(1)
         If x > 0 And y > 0 Then
-            Call clickFinFate()
-            isFin = True
+            isFin = clickFinFate()  // 可能 Fate 失败
         End If
     End If
 
@@ -407,6 +403,7 @@ End Function
 
 // 完成 Fate 点击【退出危命】按钮
 Function clickFinFate()
+    isFin = False
     Do While True
         btnSX = 0.6090      // 左上角 x 位置比例
         btnSY = 0.8627      // 左上角 y 位置比例
@@ -421,12 +418,13 @@ Function clickFinFate()
             Delay 2000
             Call RandomClick(x, y)
             Delay 1000
-
+            isFin = True
         Else
             // 直到真正退出结算画面才退出
             Exit Do
         End If
     Loop
+    clickFinFate = isFin
 End Function
 
 
@@ -457,8 +455,7 @@ Function deadBack()
         If x > 0 And y > 0 Then
 
             // 无法战斗【确认】按钮
-            Call clickDeadBack()
-            isDead = True
+            isDead = clickDeadBack()
         End If
     End If
 
@@ -468,6 +465,8 @@ End Function
 
 // 无法战斗【确认】按钮
 Function clickDeadBack()
+    isDead = False
+
     Do While True
         btnSX = 0.5816      // 左上角 x 位置比例
         btnSY = 0.6523      // 左上角 y 位置比例
@@ -481,12 +480,15 @@ Function clickDeadBack()
             TracePrint "战斗死亡【确认】，返回水晶 ..."
             Delay 2000
             Call RandomClick(x, y)
-            Delay 2000
+            Delay 1000
+            isDead = True
         Else
             // 直到真正退出结算画面才退出
             Exit Do
         End If
     Loop
+
+    clickDeadBack = isDead
 End Function
 
 
