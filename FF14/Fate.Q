@@ -94,8 +94,8 @@ Function searchFate()
             Delay 1000
 
             isRuning = autoRunToFate(x, y)
-            TracePrint "嘻嘻嘻顶顶顶发发大." & isRuning
-            If isRuning Then
+            
+            If isRuning Then 
                 Exit Do  // 进入自动寻路状态
             End If
         End If
@@ -122,11 +122,9 @@ Function autoRunToFate(fateX, fateY)
         Call AccurateClick(x, y)
         Delay 1000
         isRuning = True
-        TracePrint "嘻嘻大." & isRuning
     Else
         TracePrint "未找到【自动寻路】按钮！"
     End If
-    TracePrint "嘻嘻嘻发大." & isRuning
     autoRunToFate = isRuning
 End Function
 
@@ -134,7 +132,7 @@ End Function
 
 Function joinToFate()
     Do While True
-        TracePrint "正在检索【Fate】..."
+        TracePrint "正在【自动寻路】到 Fate..."
         Delay 1000
 
         // 【参加】Fate 按钮
@@ -165,39 +163,9 @@ Function autoFight()
         TracePrint "正在释放技能"
         Delay 1000
 
-        KeyPress "R", 1
-        Delay 1000
+        
 
-        KeyPress "1", 1
-        Delay 1000
-        KeyPress "Z", 1
-        Delay 1000
-
-        KeyPress "2", 1
-        Delay 1000
-        KeyPress "Z", 1
-        Delay 1000
-
-        KeyPress "3", 1
-        Delay 1000
-        KeyPress "Z", 1
-        Delay 1000
-
-        KeyPress "4", 1
-        Delay 1000
-        KeyPress "Z", 1
-        Delay 1000
-
-        KeyPress "5", 1
-        Delay 1000
-        KeyPress "Z", 1
-        Delay 1000
-
-        if finishFate() Then
-            Exit Do
-        End If
-
-        if finishFate() Then
+        if ArcherSkills() Then
             Exit Do
         End If
     Loop
@@ -207,6 +175,83 @@ Function autoFight()
     MiddleClick 1
 End Function
 
+
+1880 299
+1913  346
+9EB8C1
+
+Function ArcherSkills()
+    // 猛者强击（+ATK）
+    KeyPress "R", 1
+    Delay 1000
+
+    if exitFate() Then
+        ArcherSkills = True
+        Exit Function
+    End If
+
+    // xxx + 死亡箭雨
+    KeyPress "4", 1
+    Delay 1000
+    KeyPress "Z", 1
+    Delay 1000
+
+    if exitFate() Then
+        ArcherSkills = True
+        Exit Function
+    End If
+
+    // 烈劲咬箭 + 死亡箭雨
+    KeyPress "1", 1
+    Delay 1000
+    KeyPress "Z", 1
+    Delay 1000
+
+    if exitFate() Then
+        ArcherSkills = True
+        Exit Function
+    End If
+
+    // 影噬箭 + 死亡箭雨
+    KeyPress "2", 1
+    Delay 1000
+    KeyPress "Z", 1
+    Delay 1000
+
+    if exitFate() Then
+        ArcherSkills = True
+        Exit Function
+    End If
+
+    // 致伤射击 + 死亡箭雨
+    KeyPress "3", 1
+    Delay 1000
+    KeyPress "Z", 1
+    Delay 1000
+
+    if exitFate() Then
+        ArcherSkills = True
+        Exit Function
+    End If
+
+    // 绝锋箭 + 死亡箭雨
+    KeyPress "5", 1
+    Delay 1000
+    KeyPress "Z", 1
+    Delay 1000
+
+    if exitFate() Then
+        ArcherSkills = True
+        Exit Function
+    End If
+End Function
+
+
+Function exitFate()
+    isFin = finishFate()
+    isDead = deadBack()
+    exitFate = isFin Or isDead
+End Function
 
 
 Function finishFate()
