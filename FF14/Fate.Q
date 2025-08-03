@@ -37,7 +37,6 @@ Dim EMULATOR                            // 定义全局模拟器对象
 EMULATOR_WIN_NAME = "MuMu模拟器12"// 模拟器窗口名字
 
 
-
 // 启动入口
 Call main()
 
@@ -131,25 +130,48 @@ End Function
 
 
 Function joinToFate()
+    similarity = 0.8
+
+    // 【参加】Fate 按钮
+    btnSX = 0.7283      // 左上角 x 位置比例
+    btnSY = 0.2149      // 左上角 y 位置比例
+    btnEX = 0.8123      // 右下角 x 位置比例
+    btnEY = 0.2549      // 右下角 y 位置比例
+    btnColor = "4DA1C4"
+
+    // 参加 fate 按钮旁边的 【<】 标签
+    tagSX = 0.8080      // 左上角 x 位置比例
+    tagSY = 0.1968      // 左上角 y 位置比例
+    tagEX = 0.8280      // 右下角 x 位置比例
+    tagEY = 0.2330      // 右下角 y 位置比例
+    tagColor = "9EBCC3"
+    
     Do While True
         TracePrint "正在【自动寻路】到 Fate..."
         Delay 1000
 
-        // 【参加】Fate 按钮
-        btnSX = 0.7283      // 左上角 x 位置比例
-        btnSY = 0.2149      // 左上角 y 位置比例
-        btnEX = 0.8123      // 右下角 x 位置比例
-        btnEY = 0.2549      // 右下角 y 位置比例
-        btnColor = "4DA1C4"
-        similarity = 0.8
-        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-        x = coords(0)
-        y = coords(1)
-        If x > 0 And y > 0 Then
-            TracePrint "进入【Fate】范围，参加战斗！"
-            Call AccurateClick(x, y)
-            Delay 1000
-            Exit Do  // 进入战斗状态
+        tagCoords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
+        tagX = tagCoords(0)
+        tagY = tagCoords(1)
+        MoveTo tagX, tagY
+        TracePrint "坐标： (" & tagX & ", " & tagY & ")"
+        Delay 2000
+
+        IF tagX > 0 And tagY > 0 Then
+
+            btnCoords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+            btnX = btnCoords(0)
+            btnY = btnCoords(1)
+            MoveTo btnX, btnY
+            TracePrint "坐标： (" & btnX & ", " & btnY & ")"
+            Delay 2000
+            
+            If btnX > 0 And btnY > 0 Then
+                TracePrint "进入【Fate】范围，参加战斗！"
+                Call AccurateClick(btnX, btnY)
+                Delay 1000
+                Exit Do  // 进入战斗状态
+            End If
         End If
     Loop
 End Function
@@ -163,39 +185,48 @@ Function autoFight()
         TracePrint "正在释放技能"
         Delay 1000
 
-        
-
+        // 诗人技能
         if ArcherSkills() Then
             Exit Do
         End If
     Loop
-
 
     // 关闭自动平 A
     MiddleClick 1
 End Function
 
 
-1880 299
-1913  346
-9EB8C1
+// 平 A
+Function NormalAttack()
+    KeyPress "Up", 1
+    Delay 1000
+    KeyPress "Down", 1
+    Delay 1000
+End Function
+
 
 Function ArcherSkills()
     // 猛者强击（+ATK）
     KeyPress "R", 1
     Delay 1000
 
+    // Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
     End If
 
-    // xxx + 死亡箭雨
-    KeyPress "4", 1
+    // 贤者的叙述谣 + 死亡箭雨
+    KeyDown "4", 1
+    Delay 200
+    MoveTo 0, 0
+    Delay 200
+    KeyUp "4", 1
     Delay 1000
     KeyPress "Z", 1
     Delay 1000
 
+    // Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -207,6 +238,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
+    // Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -218,6 +250,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
+    // Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -229,6 +262,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
+    // Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -240,6 +274,7 @@ Function ArcherSkills()
     KeyPress "Z", 1
     Delay 1000
 
+    // Call NormalAttack()
     if exitFate() Then
         ArcherSkills = True
         Exit Function
@@ -263,7 +298,7 @@ Function finishFate()
     btnEX = 0.7074      // 右下角 x 位置比例
     btnEY = 0.9057      // 右下角 y 位置比例
     btnColor = "659EB0"
-    similarity = 0.8
+    similarity = 0.9
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
     y = coords(1)
@@ -286,7 +321,7 @@ Function deadBack()
     btnEX = 0.6774      // 右下角 x 位置比例
     btnEY = 0.8975      // 右下角 y 位置比例
     btnColor = "66A1B2"
-    similarity = 0.8
+    similarity = 0.9
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
     y = coords(1)
