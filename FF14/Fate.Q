@@ -93,7 +93,6 @@ Function searchFate()
             Delay 1000
 
             isRuning = autoRunToFate(x, y)
-            
             If isRuning Then 
                 Exit Do  // 进入自动寻路状态
             End If
@@ -111,7 +110,6 @@ Function autoRunToFate(fateX, fateY)
     btnSY = fateY - offsetY     // 自动寻路左上角 y 位置比例
     btnEX = fateX + offsetX     // 自动寻路右下角 x 位置比例
     btnEY = fateY               // 自动寻路右下角 y 位置比例
-
     runColor = "323F45"
     mode = 2                    // 检索模式，从右下到左上
     similarity = 0.9
@@ -124,6 +122,22 @@ Function autoRunToFate(fateX, fateY)
     Else
         TracePrint "未找到【自动寻路】按钮！"
     End If
+
+    // 地图右下角的水晶位置（说明点击自动寻路按钮失败，需要重新搜索）
+    crySX = 0.0226    // 左上角 x 位置比例
+    crySY = 0.8808    // 左上角 y 位置比例
+    cryEX = 0.0531    // 右下角 x 位置比例
+    cryEY = 0.9336    // 右下角 y 位置比例
+    cryColor = "F5B633" // Fate 主颜色
+    similarity = 0.8
+    coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, similarity)
+    x = coords(0)
+    y = coords(1)
+    If x > 0 And y > 0 Then
+        TracePrint "未点击到【自动寻路】按钮"
+        isRuning = False
+    End If
+
     autoRunToFate = isRuning
 End Function
 
@@ -148,23 +162,18 @@ Function joinToFate()
     
     Do While True
         TracePrint "正在【自动寻路】到 Fate..."
-        Delay 1000
+        Delay 5000  // 检测间隔拉长，避免点到过路的 Fate
 
         tagCoords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
         tagX = tagCoords(0)
         tagY = tagCoords(1)
-        MoveTo tagX, tagY
-        TracePrint "坐标： (" & tagX & ", " & tagY & ")"
-        Delay 2000
 
         IF tagX > 0 And tagY > 0 Then
 
             btnCoords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
             btnX = btnCoords(0)
             btnY = btnCoords(1)
-            MoveTo btnX, btnY
-            TracePrint "坐标： (" & btnX & ", " & btnY & ")"
-            Delay 2000
+            Delay 2000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
             
             If btnX > 0 And btnY > 0 Then
                 TracePrint "进入【Fate】范围，参加战斗！"
@@ -336,10 +345,6 @@ End Function
 
 
 
-
-
-
-
 ' 函数名称：InitElemulator
 ' 功能：初始化模拟器窗口的相关参数，并存储到全局变量 EMULATOR 中
 ' 参数：
@@ -459,4 +464,5 @@ Function AccurateClick(x, y)
     MoveTo x, y
     LeftClick 1
 End Function
+
 
