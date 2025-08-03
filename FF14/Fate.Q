@@ -36,7 +36,8 @@ SetupOCXFile=
 
 Dim EMULATOR                       // 定义全局模拟器对象
 EMULATOR_WIN_NAME = "MuMu模拟器12"  // 模拟器窗口名字
-MAX_RUN_TIME = 60000                // 自动寻路最大的超时时间（超时重新找 Fate）
+MAX_RUN_TIME = 60000     // 自动寻路最大的超时时间（超时重新找 Fate）
+MAX_FIGHT_TIME = 120000  // 自动战斗最大的超时时间（超时重新找 Fate）
 
 // 启动入口
 Call main()
@@ -221,12 +222,19 @@ Function autoFight()
     // 自动平 A
     MiddleClick 1
 
+    cnt = 0
     Do While True
         TracePrint "正在释放技能"
         Delay 1000
 
-        // 诗人技能
+        // 诗人技能（打完一套 15s）
         if ArcherSkills() Then
+            Exit Do
+        End If
+
+        // 超时战斗退出
+        cnt = cnt + 1
+        If cnt * 15 > MAX_FIGHT_TIME Then
             Exit Do
         End If
     Loop
@@ -245,6 +253,7 @@ Function NormalAttack()
 End Function
 
 
+// 打完一套需要 15s
 Function ArcherSkills()
     // 猛者强击（+ATK）
     KeyPress "R", 1
@@ -325,7 +334,6 @@ End Function
 Function exitFate()
     isFin = finishFate()
     isDead = deadBack()
-    isDead = False
     exitFate = isFin Or isDead
 End Function
 
@@ -418,6 +426,9 @@ Function deadBack()
             x = coords(0)
             y = coords(1)
             If x > 0 And y > 0 Then
+                // 关闭自动平 A
+                MiddleClick 1
+
                 TracePrint "战斗死亡【确认】，返回水晶 ..."
                 Call RandomClick(x, y)
                 Delay 5000
