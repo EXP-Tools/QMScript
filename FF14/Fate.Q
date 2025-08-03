@@ -181,11 +181,11 @@ Function joinToFate()
     similarity = 0.8
 
     // 【参与】Fate 按钮
-    btnSX = 0.7283      // 左上角 x 位置比例
-    btnSY = 0.2149      // 左上角 y 位置比例
-    btnEX = 0.8123      // 右下角 x 位置比例
-    btnEY = 0.2549      // 右下角 y 位置比例
-    btnColor = "71C1BF"
+    // btnSX = 0.7283      // 左上角 x 位置比例
+    // btnSY = 0.2149      // 左上角 y 位置比例
+    // btnEX = 0.8123      // 右下角 x 位置比例
+    // btnEY = 0.2549      // 右下角 y 位置比例
+    // btnColor = "71C1BF"
 
     // 参与 fate 按钮旁边的 【<】 标签
     tagSX = 0.8080      // 左上角 x 位置比例
@@ -210,11 +210,13 @@ Function joinToFate()
 
         IF tagX > 0 And tagY > 0 Then
             TracePrint "疑似进入【Fate】范围 ..."
-            btnCoords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
-            btnX = btnCoords(0)
-            btnY = btnCoords(1)
+            Delay 3000
+
+            tagCoords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
+            tagX = tagCoords(0)
+            tagY = tagCoords(1)
             
-            If btnX > 0 And btnY > 0 Then
+            If tagX > 0 And tagY > 0 Then
                 TracePrint "进入【Fate】范围，参与战斗！"
                 Delay 2000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
                 joinBtnX = EMULATOR("Width") * 0.7509
@@ -456,7 +458,6 @@ End Function
 
 Function deadBack()
     isDead = False
-    similarity = 0.9
 
     // 无法战斗【标题】（战斗画面颜色比较杂，多一次判断会更准确）
     btnSX = 0.3000      // 左上角 x 位置比例
@@ -464,7 +465,7 @@ Function deadBack()
     btnEX = 0.3200      // 右下角 x 位置比例
     btnEY = 0.3200      // 右下角 y 位置比例
     btnColor = "212121"
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, 1)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
@@ -475,7 +476,7 @@ Function deadBack()
         btnEX = 0.4418      // 右下角 x 位置比例
         btnEY = 0.6809      // 右下角 y 位置比例
         btnColor = "596C78"
-        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, 1)
         x = coords(0)
         y = coords(1)
         If x > 0 And y > 0 Then
@@ -498,7 +499,7 @@ Function clickDeadBack()
     btnEX = 0.6774      // 右下角 x 位置比例
     btnEY = 0.8975      // 右下角 y 位置比例
     btnColor = "66A1B2"
-    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, 1)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
