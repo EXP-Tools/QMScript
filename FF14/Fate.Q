@@ -113,7 +113,7 @@ End Function
 Function autoRunToFate(fateX, fateY)
     isRuning = False
     mode = 2          // 检索模式，从右下到左上
-    similarity = 0.9
+    similarity = 1
 
     // 相近地方有多个定位，可能出现危命【列表】
     offsetX = EMULATOR("Width") * 0.0377
@@ -132,11 +132,11 @@ Function autoRunToFate(fateX, fateY)
 
     // 【自动寻路】按钮
     offsetX = EMULATOR("Width") * 0.1741  // 2560 最远是 400px，400 对应位置比例是 0.1741
-    offsetY = EMULATOR("Height") * 0.1508 // 1440 大概是 200px，200 对应位置比例是 0.1508
+    offsetY = EMULATOR("Height") * 0.2008 // 1440 大概是 200px，200 对应位置比例是 0.1508
     btnSX = fateX               // 自动寻路左上角 x 位置比例
     btnSY = fateY - offsetY     // 自动寻路左上角 y 位置比例
     btnEX = fateX + offsetX     // 自动寻路右下角 x 位置比例
-    btnEY = fateY// 自动寻路右下角 y 位置比例
+    btnEY = fateY               // 自动寻路右下角 y 位置比例
     runColor = "323F45"
     FindColorEx btnSX, btnSY, btnEX, btnEY, runColor, mode, similarity, x, y
     If x > 0 And y > 0 Then
@@ -246,32 +246,47 @@ End Function
 
 // 移动 + 平 A (1 秒)
 Function NormalAttack(direct)
+    atkBtnX = EMULATOR("Width") * 0.8750
+    atkBtnY = EMULATOR("Height") * 0.7843
+
     If direct = "W" Then
-        keyDown "W", 1          // 移动
-        KeyPress "Up", 3        // 手动平 A
+        Call RandomClick(atkBtnX, atkBtnY)   // 手动平 A
+        Call RandomClick(atkBtnX, atkBtnY)
+        keyDown "W", 1                  // 移动
         Delay 1000
         KeyUp "W", 1
+        Call RandomClick(atkBtnX, atkBtnY)
+        Call RandomClick(atkBtnX, atkBtnY)
     End If
 
     If direct = "D" Then
+        Call RandomClick(atkBtnX, atkBtnY)
+        Call RandomClick(atkBtnX, atkBtnY)
         keyDown "D", 1
-        KeyPress "Down", 3
         Delay 1000
         KeyUp "D", 1
+        Call RandomClick(atkBtnX, atkBtnY)
+        Call RandomClick(atkBtnX, atkBtnY)
     End If
 
     If direct = "S" Then
+        Call RandomClick(atkBtnX, atkBtnY)
+        Call RandomClick(atkBtnX, atkBtnY)
         keyDown "S", 1
-        KeyPress "Up", 3
         Delay 1000
         KeyUp "S", 1
+        Call RandomClick(atkBtnX, atkBtnY)
+        Call RandomClick(atkBtnX, atkBtnY)
     End If
 
     If direct = "A" Then
+        Call RandomClick(atkBtnX, atkBtnY)
+        Call RandomClick(atkBtnX, atkBtnY)
         keyDown "A", 1
-        KeyPress "Down", 3
         Delay 1000
         KeyUp "A", 1
+        Call RandomClick(atkBtnX, atkBtnY)
+        Call RandomClick(atkBtnX, atkBtnY)
     End If
 End Function
 
