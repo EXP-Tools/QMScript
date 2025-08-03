@@ -434,6 +434,8 @@ Function clickFinFate()
         Delay 2000
         Call RandomClick(x, y)
         Delay 1000
+        Call RandomClick(x, y)
+        Delay 1000
         isFin = True
     Else
         // 可能结算画面判断错误
@@ -494,6 +496,8 @@ Function clickDeadBack()
     If x > 0 And y > 0 Then
         TracePrint "战斗死亡【确认】，返回水晶 ..."
         Delay 2000
+        Call RandomClick(x, y)
+        Delay 1000
         Call RandomClick(x, y)
         Delay 10000    // 等待复活
         isDead = True
