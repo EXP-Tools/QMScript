@@ -433,10 +433,10 @@ Function deadBack()
     similarity = 0.9
 
     // 无法战斗【标题】（战斗画面颜色比较杂，多一次判断会更准确）
-    btnSX = 0.2990      // 左上角 x 位置比例
-    btnSY = 0.3061      // 左上角 y 位置比例
-    btnEX = 0.6464      // 右下角 x 位置比例
-    btnEY = 0.3582      // 右下角 y 位置比例
+    btnSX = 0.3000      // 左上角 x 位置比例
+    btnSY = 0.3000      // 左上角 y 位置比例
+    btnEX = 0.3200      // 右下角 x 位置比例
+    btnEY = 0.3200      // 右下角 y 位置比例
     btnColor = "212121"
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
