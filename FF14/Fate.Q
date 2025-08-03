@@ -195,7 +195,7 @@ Function joinToFate()
             btnCoords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
             btnX = btnCoords(0)
             btnY = btnCoords(1)
-            Delay 5000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
+            Delay 3000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
             
             If btnX > 0 And btnY > 0 Then
                 TracePrint "进入【Fate】范围，参加战斗！"
@@ -315,7 +315,7 @@ End Function
 
 Function exitFate()
     isFin = finishFate()
-    // isDead = deadBack()
+    isDead = deadBack()
     isDead = False
     exitFate = isFin Or isDead
 End Function
@@ -330,25 +330,23 @@ Function finishFate()
     tagSY = 0.1606      // 左上角 y 位置比例
     tagEX = 0.5441      // 右下角 x 位置比例
     tagEY = 0.2556      // 右下角 y 位置比例
-    tagColor = "FF76E2"
-    coords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
+    succColor = "FF76E2" // 成功
+    failColor = "FFAD7E" // 失败
+    coords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, succColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
-
-        // 完成 Fate【退出】按钮
-        btnSX = 0.6090      // 左上角 x 位置比例
-        btnSY = 0.8627      // 左上角 y 位置比例
-        btnEX = 0.7074      // 右下角 x 位置比例
-        btnEY = 0.9057      // 右下角 y 位置比例
-        btnColor = "659EB0"
-        coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+        // 成功完成 Fate
+        Call clickFinFate()
+        isFin = True
+    Else
+        
+        // 失败完成 Fate
+        coords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, failColor, similarity)
         x = coords(0)
         y = coords(1)
         If x > 0 And y > 0 Then
-            TracePrint "【完成】Fate，退出危命任务 ..."
-            Call RandomClick(x, y)
-            Delay 5000
+            Call clickFinFate()
             isFin = True
         End If
     End If
@@ -357,35 +355,65 @@ Function finishFate()
 End Function
 
 
+// 完成 Fate 点击【退出】按钮
+Function clickFinFate()
+    btnSX = 0.6090      // 左上角 x 位置比例
+    btnSY = 0.8627      // 左上角 y 位置比例
+    btnEX = 0.7074      // 右下角 x 位置比例
+    btnEY = 0.9057      // 右下角 y 位置比例
+    btnColor = "659EB0"
+    coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+    x = coords(0)
+    y = coords(1)
+    If x > 0 And y > 0 Then
+        TracePrint "【完成】Fate，退出危命任务 ..."
+        Call RandomClick(x, y)
+        Delay 5000
+    End If
+End Function
+
+
 Function deadBack()
     isDead = False
-    similarity = 0.8
+    similarity = 0.9
 
-    // 死亡回归【保留】按钮（战斗画面颜色比较杂，多一次判断会更准确）
-    btnSX = 0.3413      // 左上角 x 位置比例
-    btnSY = 0.6334      // 左上角 y 位置比例
-    btnEX = 0.4418      // 右下角 x 位置比例
-    btnEY = 0.6809      // 右下角 y 位置比例
-    btnColor = "596C78"
+    // 无法战斗【标题】（战斗画面颜色比较杂，多一次判断会更准确）
+    btnSX = 0.2990      // 左上角 x 位置比例
+    btnSY = 0.3061      // 左上角 y 位置比例
+    btnEX = 0.6464      // 右下角 x 位置比例
+    btnEY = 0.3582      // 右下角 y 位置比例
+    btnColor = "212121"
     coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
     x = coords(0)
     y = coords(1)
     If x > 0 And y > 0 Then
 
-        // 死亡回归【确认】按钮
-        btnSX = 0.5816      // 左上角 x 位置比例
-        btnSY = 0.6523      // 左上角 y 位置比例
-        btnEX = 0.6774      // 右下角 x 位置比例
-        btnEY = 0.8975      // 右下角 y 位置比例
-        btnColor = "66A1B2"
+        // 无法战斗【保留】按钮（战斗画面颜色比较杂，多一次判断会更准确）
+        btnSX = 0.3413      // 左上角 x 位置比例
+        btnSY = 0.6334      // 左上角 y 位置比例
+        btnEX = 0.4418      // 右下角 x 位置比例
+        btnEY = 0.6809      // 右下角 y 位置比例
+        btnColor = "596C78"
         coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
         x = coords(0)
         y = coords(1)
         If x > 0 And y > 0 Then
-            TracePrint "战斗死亡【确认】，返回水晶 ..."
-            Call RandomClick(x, y)
-            Delay 5000
-            isDead = True
+
+            // 无法战斗【确认】按钮
+            btnSX = 0.5816      // 左上角 x 位置比例
+            btnSY = 0.6523      // 左上角 y 位置比例
+            btnEX = 0.6774      // 右下角 x 位置比例
+            btnEY = 0.8975      // 右下角 y 位置比例
+            btnColor = "66A1B2"
+            coords = FindAreaColor(btnSX, btnSY, btnEX, btnEY, btnColor, similarity)
+            x = coords(0)
+            y = coords(1)
+            If x > 0 And y > 0 Then
+                TracePrint "战斗死亡【确认】，返回水晶 ..."
+                Call RandomClick(x, y)
+                Delay 5000
+                isDead = True
+            End If
         End If
     End If
 
