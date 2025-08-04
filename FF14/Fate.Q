@@ -29,7 +29,8 @@ SetupOCXFile=
 //   2. 召唤搭档（推荐奶妈）
 //   3. 推荐在摩杜纳，和北萨一样多人，好处是 fate 的怪比较接近圈中心（北萨大多怪都在 Fate 圈边，自动寻路到地也是被罚站）
 //   4. 关闭地图上不必要的标记减少干扰，如 宝箱、风景、风脉、自定义标记 等
-//   5. 使用军票 / 部队特效
+//   5. 折叠左下角聊天框，避免干扰
+//   6. 使用军票 / 部队特效
 // 开始运行脚本： F10
 // 终止脚本运行： F12
 // 虽然脚本对任意规格做了同比例自适应，但是可能会出现区域偏差的情况
@@ -85,7 +86,7 @@ Function searchFate()
     Do While True
         // 因为某些原因当前没有打开地图/或地图实际没有打开成功
         Delay 2000
-        If isOpenMap() Then
+        If Not isOpenMap() Then
             TracePrint "异常未打开地图，退出【Fate】检索"
             Exit Do
         End If
@@ -177,15 +178,16 @@ End Function
 // 是否在打开地图状态
 Function isOpenMap()
     isOnMap = False
-    crySX = 0.0226    // 左上角 x 位置比例
-    crySY = 0.8808    // 左上角 y 位置比例
-    cryEX = 0.0531    // 右下角 x 位置比例
-    cryEY = 0.9336    // 右下角 y 位置比例
-    cryColor = "F5B633" // 水晶 主颜色
-    coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, 0.9)
+    crySX = 0.8450    // 左上角 x 位置比例
+    crySY = 0.0535    // 左上角 y 位置比例
+    cryEX = 0.8702    // 右下角 x 位置比例
+    cryEY = 0.0791    // 右下角 y 位置比例
+    cryColor = "CBFBFD" // 水晶 主颜色
+    coords = FindAreaColor(crySX, crySY, cryEX, cryEY, cryColor, 1)
     x = coords(0)
     y = coords(1)
-    If x > 0 And y > 0 Then
+    If x > 0 And y > 0 Then 
+    	TracePrint "当前在大地图"
         isOnMap = True
     End If
     isOpenMap = isOnMap
@@ -195,7 +197,39 @@ End Function
 
 Function joinToFate()
     isGoal = False
-    similarity = 0.8
+    
+    runTime = 0
+    Do While True
+        TracePrint "正在【自动寻路】到 Fate..."
+        Delay 5000  // 检测间隔拉长，避免点到过路的 Fate
+        runTime = runTime + 5000
+        If runTime > MAX_RUN_TIME Then
+            TracePrint "超时还没走到目的地 ..."
+            Exit Do     // 超过 1 分钟还没走到目的地，重新开始找 Fate
+        End If
+
+        IF isInFate() Then
+            TracePrint "疑似进入【Fate】范围 ..."
+            Delay 2000
+            
+            If isInFate() Then
+                TracePrint "进入【Fate】范围，参与战斗！"
+                Delay 2000  // 即使到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
+                joinBtnX = EMULATOR("Width") * 0.7509
+                joinBtnY = EMULATOR("Height") * 0.2300
+                Call AccurateClick(joinBtnX, joinBtnY)
+                Delay 1000
+                isGoal = True
+                Exit Do  // 进入战斗状态
+            End If
+        End If
+    Loop
+    joinToFate = isGoal
+End Function
+
+
+Function isInFate()
+    isInRange = False
 
     // 【参与】Fate 按钮
     // btnSX = 0.7283      // 左上角 x 位置比例
@@ -209,44 +243,19 @@ Function joinToFate()
     tagSY = 0.1968      // 左上角 y 位置比例
     tagEX = 0.8280      // 右下角 x 位置比例
     tagEY = 0.2330      // 右下角 y 位置比例
+    similarity = 0.8
     tagColor = "9EBCC3"
     
-    runTime = 0
-    Do While True
-        TracePrint "正在【自动寻路】到 Fate..."
-        Delay 5000  // 检测间隔拉长，避免点到过路的 Fate
-        runTime = runTime + 5000
-        If runTime > MAX_RUN_TIME Then
-            TracePrint "超时还没走到目的地 ..."
-            Exit Do     // 超过 1 分钟还没走到目的地，重新开始找 Fate
-        End If
+    tagCoords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
+    tagX = tagCoords(0)
+    tagY = tagCoords(1)
+    IF tagX > 0 And tagY > 0 Then
+        isInRange = True
+    End If
 
-        tagCoords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
-        tagX = tagCoords(0)
-        tagY = tagCoords(1)
-
-        IF tagX > 0 And tagY > 0 Then
-            TracePrint "疑似进入【Fate】范围 ..."
-            Delay 3000
-
-            tagCoords = FindAreaColor(tagSX, tagSY, tagEX, tagEY, tagColor, similarity)
-            tagX = tagCoords(0)
-            tagY = tagCoords(1)
-            
-            If tagX > 0 And tagY > 0 Then
-                TracePrint "进入【Fate】范围，参与战斗！"
-                Delay 2000  // 即时到达目的地也先等一下，自动寻路经常在目标 Fate 转弯导致脱离范围
-                joinBtnX = EMULATOR("Width") * 0.7509
-                joinBtnY = EMULATOR("Height") * 0.2300
-                Call AccurateClick(joinBtnX, joinBtnY)
-                Delay 1000
-                isGoal = True
-                Exit Do  // 进入战斗状态
-            End If
-        End If
-    Loop
-    joinToFate = isGoal
+    isInFate = isInRange
 End Function
+
 
 
 Function autoFight()
@@ -408,9 +417,28 @@ End Function
 
 
 Function exitFate()
+    // 完成 Fate
     isFin = finishFate()
+    if isFin Then
+        exitFate = True
+        Exit Function
+    End If
+
+    // 死亡
     isDead = deadBack()
-    exitFate = isFin Or isDead
+    if isDead Then
+        exitFate = True
+        Exit Function
+    End If
+
+    // 脱战，离开 Fate 范围
+    isOutFate = Not isInFate()
+    if isOutFate Then
+        exitFate = True
+        Exit Function
+    End If
+
+    exitFate = False
 End Function
 
 
