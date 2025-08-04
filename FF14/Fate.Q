@@ -50,9 +50,6 @@ Function main()
     
     Do While True
 
-        // 打开地图
-		Call openMap()
-
         // 检索 Fate 并自动寻路
         Call searchFate()
         
@@ -82,7 +79,16 @@ End Function
 
 
 Function searchFate()
+    // 打开地图
+    Call openMap()
+
     Do While True
+        // 因为某些原因当前没有打开地图/或地图实际没有打开成功
+        If isOpenMap() Then
+            TracePrint "异常未打开地图，退出【Fate】检索"
+            Exit Do
+        End If
+
         TracePrint "正在检索【Fate】..."
         Delay 1000
 
@@ -158,20 +164,31 @@ Function autoRunToFate(fateX, fateY)
     End If
 
     // 地图右下角的水晶位置（说明点击自动寻路按钮失败，需要重新搜索）
-    crySX = 0.0226    // 左上角 x 位置比例
-    crySY = 0.8808    // 左上角 y 位置比例
-    cryEX = 0.0531    // 右下角 x 位置比例
-    cryEY = 0.9336    // 右下角 y 位置比例
-    cryColor = "F5B633" // Fate 主颜色
-    coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, 0.9)
-    x = coords(0)
-    y = coords(1)
-    If x > 0 And y > 0 Then
+    If isOpenMap() Then
         TracePrint "未点击到【自动寻路】按钮"
         isRuning = False
     End If
 
     autoRunToFate = isRuning
+End Function
+
+
+
+// 是否在打开地图状态
+Function isOpenMap()
+    isOnMap = False
+    crySX = 0.0226    // 左上角 x 位置比例
+    crySY = 0.8808    // 左上角 y 位置比例
+    cryEX = 0.0531    // 右下角 x 位置比例
+    cryEY = 0.9336    // 右下角 y 位置比例
+    cryColor = "F5B633" // 水晶 主颜色
+    coords = FindAreaColor(mapSX, mapSY, mapEX, mapEY, fateColor, 0.9)
+    x = coords(0)
+    y = coords(1)
+    If x > 0 And y > 0 Then
+        isOnMap = True
+    End If
+    isOpenMap = isOnMap
 End Function
 
 
