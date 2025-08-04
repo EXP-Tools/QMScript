@@ -267,6 +267,19 @@ Function autoFight()
         // 诗人技能（打完一套循环 18 秒）
         if ArcherSkills() Then
             TracePrint "检测到战斗结束 ..."
+            
+            // 保底：点击退出危命按钮
+            exitBtnX = EMULATOR("Width") * 0.6399
+    		exitBtnY = EMULATOR("Height") * 0.8740
+    		Call RandomClick(exitBtnX, exitBtnY)
+            
+            
+            // 保底：点击死亡确认按钮
+            exitBtnX = EMULATOR("Width") * 0.6060
+    		exitBtnY = EMULATOR("Height") * 0.8740
+    		Call RandomClick(exitBtnX, exitBtnY)
+            
+            
             Exit Do
         End If
 
