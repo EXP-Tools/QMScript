@@ -27,7 +27,7 @@ SetupOCXFile=
 // 建议：
 //   1. 使用诗人
 //   2. 召唤搭档（推荐奶妈）
-//   3. 在摩杜纳，和北萨一样多人，好处是 fate 的怪比较接近圈中心（北萨大多怪都在 Fate 圈边，自动寻路到地也是被罚站）
+//   3. 推荐在摩杜纳，和北萨一样多人，好处是 fate 的怪比较接近圈中心（北萨大多怪都在 Fate 圈边，自动寻路到地也是被罚站）
 //   4. 关闭地图上不必要的标记减少干扰，如 宝箱、风景、风脉、自定义标记 等
 //   5. 使用军票 / 部队特效
 // 开始运行脚本： F10
@@ -74,23 +74,23 @@ Function openMap()
     smallX = EMULATOR("Width") * 0.0383
     smallY = EMULATOR("Height") * 0.6923
     Call AccurateClick(smallX, smallY)
-    Delay 2000
 End Function
 
 
 Function searchFate()
+
     // 打开地图
     Call openMap()
 
     Do While True
         // 因为某些原因当前没有打开地图/或地图实际没有打开成功
+        Delay 2000
         If isOpenMap() Then
             TracePrint "异常未打开地图，退出【Fate】检索"
             Exit Do
         End If
 
         TracePrint "正在检索【Fate】..."
-        Delay 1000
 
         // 从地图的中心开始检索第一个 Fate 位置
         mapSX = 0.1349    // 左上角 x 位置比例

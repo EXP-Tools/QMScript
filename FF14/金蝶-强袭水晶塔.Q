@@ -259,7 +259,7 @@ Function FindAreaColor(psx, psy, pex, pey, hexColor, similarity)
     aey = EMULATOR("Top") + rey         // 相对于屏幕的区域终止 Y 坐标
     // TracePrint "搜索区域的绝对范围： (" & asx & ", " & asy & ") - (" & aex & ", " & aey & ")"
 
-    mode = 0            // 检索模式，从左上到右下
+    mode = 1            // 检索模式，从中心开始向外检索
     FindColorEx asx, asy, aex, aey, hexColor, mode, similarity, rstX, rstY
 
     Dim coords(2)
