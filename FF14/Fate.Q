@@ -575,13 +575,19 @@ End Function
 Function clickExitBtn()
     // 保底：点击退出危命按钮
     Delay 1000
-    exitBtnX = EMULATOR("Width") * 0.6399
+    exitBtnX = EMULATOR("Width") * 0.6181
     exitBtnY = EMULATOR("Height") * 0.8740
     Call RandomClick(exitBtnX, exitBtnY)
     Call RandomClick(exitBtnX, exitBtnY)
-
     
     // 保底：点击死亡确认按钮
+    Delay 1000
+    exitBtnX = EMULATOR("Width") * 0.6064
+    exitBtnY = EMULATOR("Height") * 0.6591
+    Call RandomClick(exitBtnX, exitBtnY)
+    Call RandomClick(exitBtnX, exitBtnY)
+
+    // 保底：点击其他确认按钮
     Delay 1000
     exitBtnX = EMULATOR("Width") * 0.6060
     exitBtnY = EMULATOR("Height") * 0.8740
