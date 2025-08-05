@@ -225,7 +225,7 @@ Function joinToFate()
         End If
 
         // 可能画面判断不当，卡在结算确认，保底点击一下
-        clickExitBtn()
+        Call clickExitBtn()
     Loop
     joinToFate = isGoal
 End Function
@@ -270,7 +270,7 @@ Function autoFight()
         // 诗人技能（打完一套循环 18 秒）
         if ArcherSkills() Then
             TracePrint "检测到战斗结束 ..."
-            clickExitBtn()
+            Call clickExitBtn()
             Exit Do
         End If
 
@@ -282,7 +282,7 @@ Function autoFight()
         End If
 
         // 可能画面判断不当，卡在结算确认，保底点击一下
-        clickExitBtn()
+        Call clickExitBtn()
     Loop
 End Function
 
