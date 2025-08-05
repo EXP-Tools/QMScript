@@ -223,6 +223,9 @@ Function joinToFate()
                 Exit Do  // 进入战斗状态
             End If
         End If
+
+        // 可能画面判断不当，卡在结算确认，保底点击一下
+        clickExitBtn()
     Loop
     joinToFate = isGoal
 End Function
@@ -267,19 +270,7 @@ Function autoFight()
         // 诗人技能（打完一套循环 18 秒）
         if ArcherSkills() Then
             TracePrint "检测到战斗结束 ..."
-            
-            // 保底：点击退出危命按钮
-            exitBtnX = EMULATOR("Width") * 0.6399
-    		exitBtnY = EMULATOR("Height") * 0.8740
-    		Call RandomClick(exitBtnX, exitBtnY)
-            
-            
-            // 保底：点击死亡确认按钮
-            exitBtnX = EMULATOR("Width") * 0.6060
-    		exitBtnY = EMULATOR("Height") * 0.8740
-    		Call RandomClick(exitBtnX, exitBtnY)
-            
-            
+            clickExitBtn()
             Exit Do
         End If
 
@@ -289,8 +280,12 @@ Function autoFight()
             TracePrint "超时还没结束战斗 ..."
             Exit Do
         End If
+
+        // 可能画面判断不当，卡在结算确认，保底点击一下
+        clickExitBtn()
     Loop
 End Function
+
 
 
 // 移动 + 平 A (1 秒)
@@ -575,6 +570,25 @@ Function clickDeadBack()
 
     clickDeadBack = isDead
 End Function
+
+
+Function clickExitBtn()
+    // 保底：点击退出危命按钮
+    Delay 1000
+    exitBtnX = EMULATOR("Width") * 0.6399
+    exitBtnY = EMULATOR("Height") * 0.8740
+    Call RandomClick(exitBtnX, exitBtnY)
+    Call RandomClick(exitBtnX, exitBtnY)
+
+    
+    // 保底：点击死亡确认按钮
+    Delay 1000
+    exitBtnX = EMULATOR("Width") * 0.6060
+    exitBtnY = EMULATOR("Height") * 0.8740
+    Call RandomClick(exitBtnX, exitBtnY)
+    Call RandomClick(exitBtnX, exitBtnY)
+End Function
+
 
 
 ' 函数名称：InitElemulator
