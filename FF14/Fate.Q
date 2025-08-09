@@ -17,10 +17,14 @@ Type=0
 Number=1
 [SetupUI]
 Type=1
-QUI=Form1
+QUI=FormFate
 [Relative]
 SetupOCXFile=
 [Comment]
+
+[UIPackage]
+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
+
 
 [Script]
 // QQ14 自动 Fate 脚本，实测收益约 1000双色/小时
@@ -45,10 +49,13 @@ SetupOCXFile=
 // 虽然脚本对任意规格做了同比例自适应，但是可能会出现区域偏差的情况
 // 推荐 MuMu模拟器窗口大小为 2560 x 1440 (开发是在此规格下测试的)
 
-Dim EMULATOR                       // 定义全局模拟器对象
-EMULATOR_WIN_NAME = "MuMu模拟器12"  // 模拟器窗口名字
-MAX_RUN_TIME = 60000    // 自动寻路最大的超时时间（超时重新找 Fate）
-MAX_FIGHT_TIME = 900    // Fate 最大的战斗时间 15min
+Dim EMULATOR                                            // 定义全局模拟器对象
+EMULATOR_WIN_NAME = FormFate.EmulatorName.Text          // 模拟器窗口名字，默认为【MuMu模拟器12】
+MAX_RUN_TIME = Int(FormFate.RunTimeoute.Text) * 1000    // 自动寻路最大的超时时间，默认为【60】秒（超时重新找 Fate）
+MAX_FIGHT_TIME = Int(FormFate.FightTimeout.Text)        // Fate 最大的战斗时间，默认为【900】秒，即 15min（一个 Fate 时间）
+START_FLAG = FormFate.LocalVal.ListIndex                // 启动脚本时角色的位置： 0-任意均可； 1-在Fate范围（未参加）； 2-在Fate范围（已参加）
+
+
 
 // 启动入口
 Call main()
@@ -56,20 +63,33 @@ Call main()
 
 Function main()
     // 初始化模拟器窗体信息（位置与大小）
-    InitElemulator(EMULATOR_WIN_NAME)
+    InitElemulator (EMULATOR_WIN_NAME)
     
+    cycle = 0   // 循环周期
     Do While True
 
         // 检索 Fate 并自动寻路
-        Call searchFate()
+        If cycle > 0 Or (cycle = 0 And START_FLAG = 0) Then
+            Call searchFate()
+        End If
         
         // 检测是否到达目的地参战
-        isGoal = joinToFate()
+        isGoal = False
+        If cycle > 0 Or (cycle = 0 And START_FLAG < 2) Then
+            isGoal = joinToFate()
+            
+        ElseIf cycle = 0 And START_FLAG = 2 Then
+        	isGoal = True
+        	
+        End If
 
         // 开启自动战斗
         If isGoal Then
             Call autoFight()
         End If
+
+        cycle = cycle + 1
+        TracePrint "已完成 [" & cycle & "] 个 Fate"
     Loop
     
 End Function
@@ -896,3 +916,10 @@ Function AccurateClick(x, y)
     MoveTo x, y
     LeftClick 1
 End Function
+
+Event FormFate.Label7.Click
+
+End Event
+Event FormFate.Label11.Click
+
+End Event
